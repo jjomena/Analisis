@@ -71,6 +71,7 @@ public class GUICelda extends javax.swing.JPanel {
                 setBackground(new java.awt.Color(0, 0, 0));
                 setForeground(new java.awt.Color(255, 255, 255));
 
+                panel.setBackground(new java.awt.Color(204, 204, 204));
                 panel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
                 panel.setPreferredSize(new java.awt.Dimension(55, 55));
 

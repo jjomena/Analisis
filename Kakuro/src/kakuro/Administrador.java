@@ -43,31 +43,23 @@ public class Administrador {
                 punteroLinea++;
             }
             if(indice < dimension){
-                //System.out.println("BarraArriba");
                 posicion = posicion.BarraArriba;
             }
             else if(((indice % dimension)==0)&&(indice<ultimaFila)){
-                //System.out.println("BarraIzquierda");
                 posicion = posicion.BarraIzquierda;
             }
             else if(indice >= ultimaFila){
-                //System.out.println("BarraAbajo");
                 posicion = posicion.BarraAbajo;
             }
             else if(finDeLinea == indice){
-                //System.out.println("BarraDerecha");
                 posicion = posicion.BarraDerecha;
             }
             else{
-                //System.out.println("BarraCentro");
                 posicion = posicion.BarraCampo;
             }
             agregarCelda(TipoCelda.NEUTRO,posicion,indice,punteroLinea);
             recorrido++;
-            
-
         }
-         System.out.println("Se generaron correctamente las celdas");
      }
      
      public void agregarCelda(TipoCelda tipo,posicionEnMatriz posicion,int indice, int linea){
@@ -75,19 +67,163 @@ public class Administrador {
          this.listaCeldas.add(cl);  
      }
      
-     
-     
-    public void imprimirCeldas(){
-        int cantidadEle = listaCeldas.size();
-        System.out.println(String.valueOf(cantidadEle));
-        for(int x = 0; x < listaCeldas.size();x++ ){
-            System.out.println(listaCeldas.get(x).posicionEnMatriz);
+    
+    public void asignarBarraDerecha(){
+        String [] arr = {"Negro", "CeldaInferior"};
+        int fila = dimension-1;
+        TipoCelda tipo;
+        for(int x=1; x<dimension; x++){
+            tipo = listaCeldas.get(fila).getTipocelda();
+            if(tipo == TipoCelda.NEUTRO){
+                Random random = new Random();
+                int select = random.nextInt(arr.length);
+                if("CeldaInferior".equals(arr[select])){
+                    int cantidadDisponibleAbajo = calcularAbajo(fila);
+                    int N = cantidadDisponibleAbajo;
+                    int M = 2;
+                    if(N > 2){
+                        int numero = (int) Math.floor(Math.random()*(N-M+1)+M);
+                        numero = numero + revisarCruce(numero,fila,cantidadDisponibleAbajo);
+                        int maximo = calcularMaximo(numero);
+                        int minimo = calcularMinimo(numero);
+                        int valorEntero = (int) Math.floor(Math.random()*(maximo-minimo+1)+minimo);
+                        System.out.println("Valor entero generado "+valorEntero);
+                        asignarBlancosCentrosVerticales(fila,numero);
+                        listaCeldas.get(fila).asignarCeldaInferior(valorEntero); 
+                    }
+                    else{
+                        asignarNegrosVerticales(fila,cantidadDisponibleAbajo);
+                    }
+                    
+                }
+                else{
+                    listaCeldas.get(fila).asignarCeldaNegro();
+                }
+            }
+            fila = fila+dimension;
+            
         }
+        
     }
     
     public void asignarBarraIzquierda(){
         String [] arr = {"Negro", "CeldaSuperior"};
+        listaCeldas.get(0).asignarCeldaNegro();
+        int fila = 0;
+        int rango = dimension-1;
+        for(int  x= 1; x < rango; x++){
+            fila = fila+dimension;
+            Random random = new Random();
+            int select = random.nextInt(arr.length);
+            if("CeldaSuperior".equals(arr[select])){
+                int maximoFila = calcularPosiblesEnfila(fila);
+                int minimoFila = 2;
+                //AGREGAR VALICACION DE QUE MAXIMO>2
+                int numero = (int) Math.floor(Math.random()*(maximoFila-minimoFila+1)+minimoFila);
+                numero = revisarProximoNulo(fila+numero,numero);
+                int maximo = calcularMaximo(numero);
+                int minimo = calcularMinimo(numero);
+                int valorEntero = (int) Math.floor(Math.random()*(maximo-minimo+1)+minimo);
+                listaCeldas.get(fila).asignarCeldaSuperior(valorEntero);
+                asignarBlancosHorizontales(fila,numero,maximoFila);
+            }
+            else{
+                listaCeldas.get(fila).asignarCeldaNegro();
+            }
+
+        }
     }
+    
+    public void asignarBarraInferior(){
+        String [] arr = {"Negro", "CeldaSuperior"};
+        int posicion = dimension*(dimension-1);
+        int valorFinal = (dimension*dimension)-1;
+        while(posicion <= valorFinal){
+            Random random = new Random();
+            int select = random.nextInt(arr.length);
+            if("CeldaSuperior".equals(arr[select])){
+                int cantidadDisponibleDerecha = calcularCeldaDerecha(posicion);
+                System.out.println("Cantidad Disponibles "+cantidadDisponibleDerecha);
+                int N = cantidadDisponibleDerecha;
+                if(N>2){
+                    int M = 2;
+                    int valorDerecha = (int) Math.floor(Math.random()*(N-M+1)+M);
+                    System.out.println("Valores derecha "+valorDerecha);
+                    int maximo = calcularMaximo(valorDerecha);
+                    int minimo = calcularMinimo(valorDerecha);
+                    int valorEntero = (int) Math.floor(Math.random()*(maximo-minimo+1)+minimo);
+                    asignarBlancosHorizontales(posicion,valorDerecha,cantidadDisponibleDerecha);
+                    System.out.println("POSICION "+posicion+" valoDerecha"+valorDerecha+" cantidadDisponible"+cantidadDisponibleDerecha);
+                    listaCeldas.get(posicion).asignarCeldaSuperior(valorEntero); 
+                    posicion = (posicion+valorDerecha)+1;
+                }
+                else{
+                    asignarNegrosHorizontales(posicion,cantidadDisponibleDerecha);
+                    posicion=posicion+1;
+                }
+            }
+            else{
+                listaCeldas.get(posicion).asignarCeldaNegro();
+                posicion=posicion+1;
+            }
+        }
+    }
+    public int calcularPosiblesEnfila(int fila){
+        int celda = 0;
+        int puntero = fila;
+        TipoCelda tipo = TipoCelda.BLANCO;
+        while((tipo == TipoCelda.BLANCO)||(tipo == TipoCelda.NEUTRO)&&(celda<9)){
+            puntero+=1;
+            tipo = listaCeldas.get(puntero).getTipocelda();
+            if((tipo == TipoCelda.BLANCO)||(tipo == TipoCelda.NEUTRO)){
+                celda+=1;
+            }
+        }
+        return celda;
+    }
+    
+    public int calcularPosiblesEnfilaAbajo(int fila){
+        int celda = 0;
+        int puntero = fila;
+        int maximoValor = dimension*dimension;
+        TipoCelda tipo = TipoCelda.BLANCO;
+        while(((tipo == TipoCelda.BLANCO)||(tipo == TipoCelda.NEUTRO))&&(celda<9)&&(puntero<maximoValor)){
+            puntero = puntero + dimension;
+            tipo = listaCeldas.get(puntero).getTipocelda();
+            if((tipo == TipoCelda.BLANCO)||(tipo == TipoCelda.NEUTRO)){
+                celda+=1;
+            }
+
+        }
+        return celda;
+    }
+
+    public int revisarProximoNulo(int posicion,int numero){
+        int celda = numero;
+        int puntero = posicion;
+        TipoCelda tipo = TipoCelda.BLANCO;
+        while((celda<9)&&(tipo == TipoCelda.BLANCO)){
+            puntero+=1;
+            tipo = listaCeldas.get(puntero).getTipocelda(); 
+            if(tipo == TipoCelda.BLANCO){
+                celda+=1;
+            }
+        }
+        return celda;
+    }
+//    public int revisarProximoNuloAbajo(int posicion,int numero){
+//        int celda = numero;
+//        int puntero = posicion;
+//        TipoCelda tipo = TipoCelda.BLANCO;
+//        while((celda<9)&&(tipo == TipoCelda.BLANCO)){
+//            puntero=puntero+dimension;
+//            tipo = listaCeldas.get(puntero).getTipocelda(); 
+//            if(tipo == TipoCelda.BLANCO){
+//                celda+=1;
+//            }
+//        }
+//        return celda;
+//    }
     
     public void asignarBarraSuperior(){
         String [] arr = {"Negro", "CeldaInferior"};
@@ -95,22 +231,27 @@ public class Administrador {
         for(int posicion = 1 ; posicion < dimension; posicion++){
             Random random = new Random();
             int select = random.nextInt(arr.length);
-            //System.out.println("Random String selected: " + arr[select]);
             if("CeldaInferior".equals(arr[select])){
-                int numero = (int) (Math.random() * 7) + 2;
-                //System.out.println("El numero previo es: "+numero);
-                if(numero != 9){
-                    if(revisarCruce(numero,posicion)){
-                        numero = numero+1;}
+                //int numero = (int) (Math.random() * 7) + 2;
+                int numeroMaximo = calcularAbajo(posicion);
+                if(numeroMaximo >= 2){
+                    int numeroMinimo = 2;
+                    int numero = (int) Math.floor(Math.random()*(numeroMaximo-numeroMinimo+1)+numeroMinimo);
+                    if(numero != 9){
+                        numero = numero + revisarCruce(numero,posicion,9);
+                    }
+                    int maximo = calcularMaximo(numero);
+                    int minimo = calcularMinimo(numero);
+                    int valorEntero = (int) Math.floor(Math.random()*(maximo-minimo+1)+minimo);
+                    listaCeldas.get(posicion).asignarCeldaInferior(valorEntero);
+                    asignarBlancosVerticales(posicion,numero);
                 }
-                int maximo = calcularMaximo(numero);
-                int minimo = calcularMinimo(numero);
-                //System.out.println("Maximo "+maximo);
-                //System.out.println("Minimo "+minimo);
-                int valorEntero = (int) Math.floor(Math.random()*(maximo-minimo+1)+minimo);
-                //System.out.println("Generado "+valorEntero);
-                listaCeldas.get(posicion).asignarCeldaInferior(valorEntero);
-                asignarBlancosVerticales(posicion,numero);
+                else{
+                    listaCeldas.get(posicion).asignarCeldaNegro();
+                    int posicionSiguiente = posicion + dimension;
+                    listaCeldas.get(posicionSiguiente).asignarCeldaNegro();
+                }
+
             }
             else{
                 listaCeldas.get(posicion).asignarCeldaNegro();
@@ -118,11 +259,25 @@ public class Administrador {
         }
     }
     
-    public boolean revisarCruce(int numero,int posicion){
+    
+    public int revisarCruce(int numero,int posicion, int maximo){
+        int contador = 0;
         int signumero = numero+1;
-        int posicionMatriz = (signumero*dimension)+ posicion;
-        TipoCelda tipo = listaCeldas.get(posicionMatriz).getTipocelda();
-        return tipo == TipoCelda.BLANCO;     
+        int fila = listaCeldas.get(posicion).getFilaEnMatriz();
+        int ultimaFila = ((dimension-fila)*dimension)+posicion;
+        int posicionFila = (signumero * dimension)+posicion;
+        if(signumero <= maximo){
+            TipoCelda tipo = listaCeldas.get(posicionFila).getTipocelda();
+            while((tipo == TipoCelda.BLANCO) && (signumero <= maximo)){
+                contador+=1;
+                signumero+=1;
+                posicionFila = posicionFila + dimension;
+                if(posicionFila <= ultimaFila){
+                    tipo = listaCeldas.get(posicionFila).getTipocelda();
+                }
+            }
+        }
+        return contador;
     }
     
     public void asignarBlancosVerticales(int posicion,int numero){
@@ -137,12 +292,17 @@ public class Administrador {
         }
     }
     
-    public void asignarBlancosHorizontales(int posicion,int numero){
+    public void asignarBlancosHorizontales(int posicion,int numero,int maximo){
         int posicionFila = posicion;
         for(int x = 0; x<numero; x++){
             posicionFila = posicionFila + 1;
             listaCeldas.get(posicionFila).asignarCeldaBlanco();
-        } 
+        }
+        posicionFila = posicionFila + 1;
+        int posicionMaximo = (posicion+maximo)+1;
+        if(posicionFila <= posicionMaximo){
+            listaCeldas.get(posicionFila).asignarCeldaNegro();
+        }
     }
     public void asignarBlancosCentrosVerticales(int posicion,int numero){
         int posicionFila = posicion;
@@ -150,39 +310,42 @@ public class Administrador {
             posicionFila = posicionFila + dimension;
             listaCeldas.get(posicionFila).asignarCeldaBlanco();
         }
+        
+    }
+    
+    public void asignarNegrosVerticales(int posicion,int numero){
+        int posicionFila = posicion;
+        for(int x = 0; x<numero; x++){
+            posicionFila = posicionFila + dimension;
+            listaCeldas.get(posicionFila).asignarCeldaNegro();
+        } 
+    }
+    public void asignarNegrosHorizontales(int posicion,int numero){
+        int posicionFila = posicion;
+        for(int x = 0; x<numero; x++){
+            posicionFila = posicionFila + 1;
+            listaCeldas.get(posicionFila).asignarCeldaNegro();
+        } 
     }
     
     public void asignarCentroHorizontales(int posicion){
         int cantidadDisponibleDerecha = calcularCeldaDerecha(posicion);
         int cantidadDisponibleAbajo = calcularAbajo(posicion);
-        //System.out.println("Cantidad Disponibles Derecha: "+cantidadDisponibleDerecha);
-        //System.out.println("Cantidad Disponibles Abajo: "+cantidadDisponibleAbajo);
         if((cantidadDisponibleDerecha > 2) && (cantidadDisponibleAbajo > 2)){
             int N = cantidadDisponibleDerecha;
-            if(N>9){
-                N = 9;
-            }
             int M = 2;
             int valorDerecha = (int) Math.floor(Math.random()*(N-M+1)+M);
-            System.out.println("Se genero un campo mixto Derecho: "+valorDerecha);
             int maximo = calcularMaximo(valorDerecha);
             int minimo = calcularMinimo(valorDerecha);
-            System.out.println("Maximo "+maximo);
-            System.out.println("Minimo "+minimo);
             int valorEntero = (int) Math.floor(Math.random()*(maximo-minimo+1)+minimo);
-            System.out.println("Valor Generado: "+valorEntero);
-            asignarBlancosHorizontales(posicion,valorDerecha);
-            //System.out.println("Generado "+valorEntero);
+            asignarBlancosHorizontales(posicion,valorDerecha,cantidadDisponibleDerecha);
             //
             N = cantidadDisponibleAbajo;
             int valorAbajo = (int) Math.floor(Math.random()*(N-M+1)+M);
-            //System.out.println("Se genero un campo mixto Abajo: "+valorAbajo);
+            valorAbajo = valorAbajo + revisarCruce(valorAbajo,posicion,cantidadDisponibleAbajo);
             int maximo2 = calcularMaximo(valorAbajo);
             int minimo2 = calcularMinimo(valorAbajo);
-            //System.out.println("Maximo "+maximo2);
-            //System.out.println("Minimo "+minimo2);
             int valorEntero2 = (int) Math.floor(Math.random()*(maximo2-minimo2+1)+minimo2);
-            //System.out.println("Generado "+valorEntero2);
             asignarBlancosCentrosVerticales(posicion,valorAbajo);
             listaCeldas.get(posicion).asignarCeldaMixta(valorEntero, valorEntero2); 
         }
@@ -190,15 +353,22 @@ public class Administrador {
             int N = cantidadDisponibleDerecha;
             int M = 2;
             int valorDerecha = (int) Math.floor(Math.random()*(N-M+1)+M);
-            asignarBlancosHorizontales(posicion,valorDerecha);
-            listaCeldas.get(posicion).asignarCeldaSuperior(valorDerecha);
+            int maximo2 = calcularMaximo(valorDerecha);
+            int minimo2 = calcularMinimo(valorDerecha);
+            int valorEntero2 = (int) Math.floor(Math.random()*(maximo2-minimo2+1)+minimo2);
+            asignarBlancosHorizontales(posicion,valorDerecha,cantidadDisponibleDerecha);
+            listaCeldas.get(posicion).asignarCeldaSuperior(valorEntero2);
         }
         else if((cantidadDisponibleDerecha < 2) && (cantidadDisponibleAbajo > 2)){
             int N = cantidadDisponibleAbajo;
             int M = 2;
             int valorAbajo= (int) Math.floor(Math.random()*(N-M+1)+M);
+            valorAbajo = valorAbajo + revisarCruce(valorAbajo,posicion,cantidadDisponibleAbajo);
+            int maximo2 = calcularMaximo(valorAbajo);
+            int minimo2 = calcularMinimo(valorAbajo);
+            int valorEntero2 = (int) Math.floor(Math.random()*(maximo2-minimo2+1)+minimo2);
             asignarBlancosCentrosVerticales(posicion,valorAbajo);
-            listaCeldas.get(posicion).asignarCeldaInferior(valorAbajo);
+            listaCeldas.get(posicion).asignarCeldaInferior(valorEntero2);
         }
         else{
             listaCeldas.get(posicion).asignarCeldaNegro();
@@ -209,16 +379,29 @@ public class Administrador {
         int filaEnMatriz = listaCeldas.get(posicion).getFilaEnMatriz();
         int finDeLinea = (dimension * filaEnMatriz)-1;
         int valoresPosibles = finDeLinea-posicion; 
+        if(valoresPosibles > 9){
+            valoresPosibles = 9;
+        }
         return valoresPosibles;
     }
     
     public int calcularAbajo(int posicion){
-        int filaEnMatriz = listaCeldas.get(posicion).getFilaEnMatriz();
-        int diferenciaLineas = dimension-filaEnMatriz;
-        int finDeLinea = diferenciaLineas * dimension;
-        int valoresPosibles = (finDeLinea/dimension);
-        System.out.println("Valores Posibles Abajo: "+valoresPosibles);
-        return valoresPosibles;
+        int contador = 0;
+        posicion = posicion + dimension;
+        int fila = listaCeldas.get(posicion).getFilaEnMatriz();
+        int ultimaFila = ((dimension-fila)*dimension)+posicion;
+        TipoCelda tipo = listaCeldas.get(posicion).getTipocelda();
+        while((tipo == TipoCelda.BLANCO || tipo == TipoCelda.NEUTRO) && contador<9){
+            contador+=1;
+            posicion = posicion + dimension;
+            if(posicion <= ultimaFila){
+                tipo = listaCeldas.get(posicion).getTipocelda();
+            }
+            else{
+                return contador;
+            }
+        }
+        return contador;
     }
     public int calcularMaximo(int valor){
         int base = 9;
@@ -236,86 +419,5 @@ public class Administrador {
            suma = suma + (base+x); 
         }
         return suma;
-    }
-    
-    
-     
-      
-     public void asignarCeldas(){
-         posicionEnMatriz posicionEnMatriz;
-          String [] arr = {"Negro", "CeldaInferior"};
-          String [] arr2 = {"Negro", "CeldaSuperior"};
-          String [] arr3 = {"Blanco", "CeldaMixta","CeldaInferior","CeldaSuperior","Negro"};
-         for(int posicion = 0;posicion < listaCeldas.size(); posicion++){
-             posicionEnMatriz = listaCeldas.get(posicion).getPosicionEnMatriz();
-             if(null == posicionEnMatriz){
-                 //System.out.println("CENTRO");
-             }
-             else switch (posicionEnMatriz) {
-                 case BarraArriba:
-                     {
-                         Random random = new Random();
-                         int select = random.nextInt(arr.length);
-                         //System.out.println("Random String selected: " + arr[select]);
-                         if("CeldaInferior".equals(arr[select])){
-                             listaCeldas.get(posicion).asignarCeldaInferior(0);
-                         }
-                         break;
-                     }
-                 case BarraIzquierda:
-                     {
-                         Random random = new Random();
-                         int select = random.nextInt(arr2.length);
-                         //System.out.println("Random String selected: " + arr2[select]);
-                         if("CeldaSuperior".equals(arr2[select])){
-                             listaCeldas.get(posicion).asignarCeldaSuperior(0);
-                         }
-                         break;
-                     }
-                 case BarraDerecha:
-                     {
-                         Random random = new Random();
-                         int select = random.nextInt(arr.length);
-                         //System.out.println("Random String selected: " + arr[select]);
-                         if("CeldaInferior".equals(arr[select])){
-                             listaCeldas.get(posicion).asignarCeldaInferior(0);
-                         }
-                         break;
-                     }
-                 case BarraAbajo:
-                     {
-                         Random random = new Random();
-                         int select = random.nextInt(arr2.length);
-                         //System.out.println("Random String selected: " + arr2[select]);
-                         if("CeldaSuperior".equals(arr2[select])){
-                             listaCeldas.get(posicion).asignarCeldaSuperior(0);
-                         }
-                         break;
-                     }
-                 default:
-                     //System.out.println("CENTRO");
-                     Random random = new Random();
-                     int select = random.nextInt(arr3.length);
-                     //System.out.println("Random String selected: " + arr3[select]);
-                     if ("CeldaInferior".equals(arr3[select])){
-                         listaCeldas.get(posicion).asignarCeldaInferior(0);
-                     }
-                     else if("CeldaSuperior".equals(arr3[select])){
-                         listaCeldas.get(posicion).asignarCeldaSuperior(0);
-                     }
-                     else if("CeldaMixta".equals(arr3[select])){
-                         listaCeldas.get(posicion).asignarCeldaMixta(0, 0);
-                     }
-                     else if("Blanco".equals(arr3[select])){
-                         listaCeldas.get(posicion).asignarCeldaBlanco();
-                     }
-                     else{
-                         listaCeldas.get(posicion).asignarCeldaNeutro();
-                     }
-                     
-                     break;
-             }
-         }
-     }
-    
+    } 
 }

@@ -95,7 +95,11 @@ public class GUIMatriz extends javax.swing.JFrame {
         jpanelDesign.revalidate();
         jpanelDesign.repaint();
         admin.generarListaCeldas(14);
+        admin.asignarBarraInferior();
+        admin.asignarBarraIzquierda();
+        admin.asignarBarraDerecha();
         admin.asignarBarraSuperior();
+        
         //admin.imprimirCeldas();
         //admin.asignarCeldas();
         listaCeldas = admin.getListaCeldas();
@@ -106,7 +110,6 @@ public class GUIMatriz extends javax.swing.JFrame {
             GUICelda panel = null;
             String valorInferior;
             String valorSuperior;
-            //System.out.println("TIPO: "+tipo);
             if(null != tipo)switch (tipo) {
                 case ABAJO:
                     panel = new GUICelda();
