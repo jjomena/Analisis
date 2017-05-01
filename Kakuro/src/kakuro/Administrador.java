@@ -405,9 +405,9 @@ public class Administrador {
         int filaEnMatriz = listaCeldas.get(posicion).getFilaEnMatriz();
         int finDeLinea = (dimension*filaEnMatriz)-1;
         int valoresPosibles = finDeLinea-posicion;
-        if(valoresPosibles >= 5){
-            valoresPosibles = 5;
-        }
+        //if(valoresPosibles >= 5){
+            //valoresPosibles = 5;
+        //}
         if(valoresPosibles >= 2){
             posicion = posicion + 1;
             TipoCelda tipo = listaCeldas.get(posicion).getTipocelda();
@@ -431,9 +431,9 @@ public class Administrador {
         int finDeColumna = dimension;
         int ultimaFila = ((dimension-filaEnMatriz)*dimension)+posicion;
         int valoresPosibles = finDeColumna-filaEnMatriz;
-        if(valoresPosibles >= 5){
-            valoresPosibles = 5;
-        }
+        //if(valoresPosibles >= 5){
+            //valoresPosibles = 5;
+        //}
         if(valoresPosibles >= 2){
             posicion = posicion + dimension;
             TipoCelda tipo = listaCeldas.get(posicion).getTipocelda();
