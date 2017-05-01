@@ -94,6 +94,7 @@ public class GUIMatriz extends javax.swing.JFrame {
         jpanelDesign.removeAll();
         jpanelDesign.revalidate();
         jpanelDesign.repaint();
+        admin.limpiarLista();
         admin.generarListaCeldas(14);
         admin.asignarBarraInferior();
         admin.asignarBarraIzquierda();

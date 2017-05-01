@@ -29,6 +29,10 @@ public class Administrador {
         this.listaCeldas = listaCeldas;
     }
     
+    public void limpiarLista(){
+        listaCeldas.clear();
+    }
+    
     public void generarListaCeldas(int dimension){
         this.dimension = dimension;
         posicionEnMatriz posicion = null;
@@ -97,7 +101,9 @@ public class Administrador {
                     
                 }
                 else{
-                    listaCeldas.get(fila).asignarCeldaNegro();
+                    if(tipo==TipoCelda.NEUTRO){
+                        listaCeldas.get(fila).asignarCeldaNegro();
+                    }
                 }
             }
             fila = fila+dimension;
@@ -111,25 +117,33 @@ public class Administrador {
         listaCeldas.get(0).asignarCeldaNegro();
         int fila = 0;
         int rango = dimension-1;
+        TipoCelda tipo;
         for(int  x= 1; x < rango; x++){
             fila = fila+dimension;
+            tipo = listaCeldas.get(fila).getTipocelda();
             Random random = new Random();
             int select = random.nextInt(arr.length);
             if("CeldaSuperior".equals(arr[select])){
                 //int maximoFila = calcularPosiblesEnfila(fila);
                 int maximoFila = calcularCeldaDerecha(fila);
                 int minimoFila = 2;
-                //AGREGAR VALICACION DE QUE MAXIMO>2
-                int numero = (int) Math.floor(Math.random()*(maximoFila-minimoFila+1)+minimoFila);
-                numero = revisarProximoNulo(fila+numero,numero);
-                int maximo = calcularMaximo(numero);
-                int minimo = calcularMinimo(numero);
-                int valorEntero = (int) Math.floor(Math.random()*(maximo-minimo+1)+minimo);
-                listaCeldas.get(fila).asignarCeldaSuperior(valorEntero);
-                asignarBlancosHorizontales(fila,numero,maximoFila);
+                if(maximoFila>2){
+                    int numero = (int) Math.floor(Math.random()*(maximoFila-minimoFila+1)+minimoFila);
+                    numero = revisarProximoNulo(fila+numero,numero);
+                    int maximo = calcularMaximo(numero);
+                    int minimo = calcularMinimo(numero);
+                    int valorEntero = (int) Math.floor(Math.random()*(maximo-minimo+1)+minimo);
+                    listaCeldas.get(fila).asignarCeldaSuperior(valorEntero);
+                    asignarBlancosHorizontales(fila,numero,maximoFila);
+                }
+                else{
+                    asignarNegrosVerticales(fila,maximoFila);   
+                }
             }
             else{
-                listaCeldas.get(fila).asignarCeldaNegro();
+                if(tipo==TipoCelda.NEUTRO){
+                    listaCeldas.get(fila).asignarCeldaNegro();
+                }
             }
 
         }
@@ -318,16 +332,24 @@ public class Administrador {
     
     public void asignarNegrosVerticales(int posicion,int numero){
         int posicionFila = posicion;
+        TipoCelda tipo;
         for(int x = 0; x<numero; x++){
             posicionFila = posicionFila + dimension;
-            listaCeldas.get(posicionFila).asignarCeldaNegro();
+            tipo = listaCeldas.get(posicionFila).getTipocelda();
+            if(tipo==TipoCelda.NEUTRO){
+                listaCeldas.get(posicionFila).asignarCeldaNegro();
+            }
         } 
     }
     public void asignarNegrosHorizontales(int posicion,int numero){
         int posicionFila = posicion;
+        TipoCelda tipo;
         for(int x = 0; x<numero; x++){
             posicionFila = posicionFila + 1;
-            listaCeldas.get(posicionFila).asignarCeldaNegro();
+            tipo = listaCeldas.get(posicionFila).getTipocelda();
+            if(tipo==TipoCelda.NEUTRO){
+                listaCeldas.get(posicionFila).asignarCeldaNegro();
+            }
         } 
     }
     
@@ -405,9 +427,6 @@ public class Administrador {
     
     public int calcularAbajo(int posicion){
         int contador = 0;
-        //posicion = posicion + dimension;
-        
-        
         int filaEnMatriz = listaCeldas.get(posicion).getFilaEnMatriz();
         int finDeColumna = dimension;
         int ultimaFila = ((dimension-filaEnMatriz)*dimension)+posicion;
@@ -430,21 +449,7 @@ public class Administrador {
             }
         }
         return contador;
-    }
-        
-//        TipoCelda tipo = listaCeldas.get(posicion).getTipocelda();
-//        while((tipo == TipoCelda.BLANCO || tipo == TipoCelda.NEUTRO) && contador<9){
-//            contador+=1;
-//            posicion = posicion + dimension;
-//            if(posicion <= ultimaFila){
-//                tipo = listaCeldas.get(posicion).getTipocelda();
-//            }
-//            else{
-//                return contador;
-//            }
-//        }
-//        return contador;
-    
+    } 
     public int calcularMaximo(int valor){
         int base = 9;
         int suma = 0;
