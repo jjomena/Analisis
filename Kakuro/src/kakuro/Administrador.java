@@ -1,18 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package kakuro;
 
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Random;
 
-/**
- *
- * @author Joaquín
- */
+
 public class Administrador {
     private List<Celda> listaCeldas;
     private int dimension;
@@ -230,11 +222,12 @@ public class Administrador {
     public void asignarBarraSuperior(){
         String [] arr = {"Negro", "CeldaInferior"};
         listaCeldas.get(0).asignarCeldaNegro();
+        TipoCelda tipo;
         for(int posicion = 1 ; posicion < dimension; posicion++){
             Random random = new Random();
             int select = random.nextInt(arr.length);
+            tipo = listaCeldas.get(posicion).getTipocelda();
             if("CeldaInferior".equals(arr[select])){
-                //int numero = (int) (Math.random() * 7) + 2;
                 int numeroMaximo = calcularAbajo(posicion);
                 if(numeroMaximo >= 2){
                     int numeroMinimo = 2;
@@ -249,13 +242,17 @@ public class Administrador {
                     asignarBlancosVerticales(posicion,numero);
                 }
                 else{
-                    listaCeldas.get(posicion).asignarCeldaNegro();
-                    int posicionSiguiente = posicion + dimension;
-                    listaCeldas.get(posicionSiguiente).asignarCeldaNegro();
+                    //listaCeldas.get(posicion).asignarCeldaNegro();
+                    //int posicionSiguiente = posicion + dimension;
+                    //listaCeldas.get(posicionSiguiente).asignarCeldaNegro();
+                    asignarNegrosVerticales(posicion,numeroMaximo);
                 }
 
             }
             else{
+                if(tipo==TipoCelda.NEUTRO){
+                    listaCeldas.get(posicion).asignarCeldaNegro();
+                }
                 listaCeldas.get(posicion).asignarCeldaNegro();
             }
         }
