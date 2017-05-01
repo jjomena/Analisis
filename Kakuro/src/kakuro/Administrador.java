@@ -84,7 +84,7 @@ public class Administrador {
                         int minimo = calcularMinimo(numero);
                         int valorEntero = (int) Math.floor(Math.random()*(maximo-minimo+1)+minimo);
                         System.out.println("Valor entero generado "+valorEntero);
-                        asignarBlancosCentrosVerticales(fila,numero);
+                        asignarBlancosCentrosVerticales(fila,numero,cantidadDisponibleAbajo);
                         listaCeldas.get(fila).asignarCeldaInferior(valorEntero); 
                     }
                     else{
@@ -175,35 +175,6 @@ public class Administrador {
             }
         }
     }
-//    public int calcularPosiblesEnfila(int fila){
-//        int celda = 0;
-//        int puntero = fila;
-//        TipoCelda tipo = TipoCelda.BLANCO;
-//        while((tipo == TipoCelda.BLANCO)||(tipo == TipoCelda.NEUTRO)&&(celda<9)){
-//            puntero+=1;
-//            tipo = listaCeldas.get(puntero).getTipocelda();
-//            if((tipo == TipoCelda.BLANCO)||(tipo == TipoCelda.NEUTRO)){
-//                celda+=1;
-//            }
-//        }
-//        return celda;
-//    }
-    
-//    public int calcularPosiblesEnfilaAbajo(int fila){
-//        int celda = 0;
-//        int puntero = fila;
-//        int maximoValor = dimension*dimension;
-//        TipoCelda tipo = TipoCelda.BLANCO;
-//        while(((tipo == TipoCelda.BLANCO)||(tipo == TipoCelda.NEUTRO))&&(celda<9)&&(puntero<maximoValor)){
-//            puntero = puntero + dimension;
-//            tipo = listaCeldas.get(puntero).getTipocelda();
-//            if((tipo == TipoCelda.BLANCO)||(tipo == TipoCelda.NEUTRO)){
-//                celda+=1;
-//            }
-//
-//        }
-//        return celda;
-//    }
 
     public int revisarProximoNulo(int posicion,int numero){
         int celda = numero;
@@ -294,6 +265,25 @@ public class Administrador {
         }
         return contador;
     }
+    public int revisarCruceHorizontal(int numero,int posicion,int maximo){
+        int contador = 0;
+        int signumero = numero+1;
+        int fila = listaCeldas.get(posicion).getFilaEnMatriz();
+        int ultimaFila = (fila*dimension)-1;
+        int posicionFila = posicion+signumero;
+        if(signumero <= maximo){
+            TipoCelda tipo = listaCeldas.get(posicionFila).getTipocelda();
+            while((tipo == TipoCelda.BLANCO) && (signumero <= maximo)){
+                contador+=1;
+                signumero+=1;
+                posicionFila = posicionFila + 1;
+                if(posicionFila <= ultimaFila){
+                    tipo = listaCeldas.get(posicionFila).getTipocelda();
+                }
+            }
+        }
+        return contador;
+    }
     
     public void asignarBlancosVerticales(int posicion,int numero){
         int posicionFila = posicion;
@@ -309,22 +299,33 @@ public class Administrador {
     
     public void asignarBlancosHorizontales(int posicion,int numero,int maximo){
         int posicionFila = posicion;
+        TipoCelda tipo;
         for(int x = 0; x<numero; x++){
             posicionFila = posicionFila + 1;
             listaCeldas.get(posicionFila).asignarCeldaBlanco();
         }
         if(numero<maximo){
             posicionFila = posicionFila + 1;
-            listaCeldas.get(posicionFila).asignarCeldaNegro();
+            tipo = listaCeldas.get(posicionFila).getTipocelda();
+            if(tipo==TipoCelda.NEUTRO){
+                listaCeldas.get(posicionFila).asignarCeldaNegro();
+            }
         }
     }
-    public void asignarBlancosCentrosVerticales(int posicion,int numero){
+    public void asignarBlancosCentrosVerticales(int posicion,int numero,int maximo){
         int posicionFila = posicion;
+        TipoCelda tipo;
         for(int x = 0; x<numero; x++){
             posicionFila = posicionFila + dimension;
             listaCeldas.get(posicionFila).asignarCeldaBlanco();
         }
-        
+        if(numero<maximo){
+            posicionFila = posicionFila + dimension;
+            tipo = listaCeldas.get(posicionFila).getTipocelda();
+            if(tipo==TipoCelda.NEUTRO){
+                listaCeldas.get(posicionFila).asignarCeldaNegro();
+            }
+        }
     }
     
     public void asignarNegrosVerticales(int posicion,int numero){
@@ -357,6 +358,7 @@ public class Administrador {
             int N = cantidadDisponibleDerecha;
             int M = 2;
             int valorDerecha = (int) Math.floor(Math.random()*(N-M+1)+M);
+            valorDerecha = valorDerecha + revisarCruceHorizontal(valorDerecha,posicion,cantidadDisponibleDerecha);
             int maximo = calcularMaximo(valorDerecha);
             int minimo = calcularMinimo(valorDerecha);
             int valorEntero = (int) Math.floor(Math.random()*(maximo-minimo+1)+minimo);
@@ -368,13 +370,14 @@ public class Administrador {
             int maximo2 = calcularMaximo(valorAbajo);
             int minimo2 = calcularMinimo(valorAbajo);
             int valorEntero2 = (int) Math.floor(Math.random()*(maximo2-minimo2+1)+minimo2);
-            asignarBlancosCentrosVerticales(posicion,valorAbajo);
+            asignarBlancosCentrosVerticales(posicion,valorAbajo,cantidadDisponibleAbajo);
             listaCeldas.get(posicion).asignarCeldaMixta(valorEntero, valorEntero2); 
         }
         else if((cantidadDisponibleDerecha > 2) && (cantidadDisponibleAbajo < 2)){
             int N = cantidadDisponibleDerecha;
             int M = 2;
             int valorDerecha = (int) Math.floor(Math.random()*(N-M+1)+M);
+            valorDerecha = valorDerecha + revisarCruceHorizontal(valorDerecha,posicion,cantidadDisponibleDerecha);
             int maximo2 = calcularMaximo(valorDerecha);
             int minimo2 = calcularMinimo(valorDerecha);
             int valorEntero2 = (int) Math.floor(Math.random()*(maximo2-minimo2+1)+minimo2);
@@ -389,7 +392,7 @@ public class Administrador {
             int maximo2 = calcularMaximo(valorAbajo);
             int minimo2 = calcularMinimo(valorAbajo);
             int valorEntero2 = (int) Math.floor(Math.random()*(maximo2-minimo2+1)+minimo2);
-            asignarBlancosCentrosVerticales(posicion,valorAbajo);
+            asignarBlancosCentrosVerticales(posicion,valorAbajo,cantidadDisponibleAbajo);
             listaCeldas.get(posicion).asignarCeldaInferior(valorEntero2);
         }
         else{
