@@ -99,9 +99,9 @@ public class GUIMatriz extends javax.swing.JFrame {
         admin.asignarBarraIzquierda();
         admin.asignarBarraDerecha();
         admin.asignarBarraSuperior();
+        admin.asignarCentrosLibres();
         
-        //admin.imprimirCeldas();
-        //admin.asignarCeldas();
+
         listaCeldas = admin.getListaCeldas();
         jpanelDesign.setLayout(new GridLayout(0,14,0,0));
         for (int recorrido = 0; recorrido < listaCeldas.size();recorrido++){

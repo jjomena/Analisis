@@ -116,7 +116,8 @@ public class Administrador {
             Random random = new Random();
             int select = random.nextInt(arr.length);
             if("CeldaSuperior".equals(arr[select])){
-                int maximoFila = calcularPosiblesEnfila(fila);
+                //int maximoFila = calcularPosiblesEnfila(fila);
+                int maximoFila = calcularCeldaDerecha(fila);
                 int minimoFila = 2;
                 //AGREGAR VALICACION DE QUE MAXIMO>2
                 int numero = (int) Math.floor(Math.random()*(maximoFila-minimoFila+1)+minimoFila);
@@ -168,35 +169,35 @@ public class Administrador {
             }
         }
     }
-    public int calcularPosiblesEnfila(int fila){
-        int celda = 0;
-        int puntero = fila;
-        TipoCelda tipo = TipoCelda.BLANCO;
-        while((tipo == TipoCelda.BLANCO)||(tipo == TipoCelda.NEUTRO)&&(celda<9)){
-            puntero+=1;
-            tipo = listaCeldas.get(puntero).getTipocelda();
-            if((tipo == TipoCelda.BLANCO)||(tipo == TipoCelda.NEUTRO)){
-                celda+=1;
-            }
-        }
-        return celda;
-    }
+//    public int calcularPosiblesEnfila(int fila){
+//        int celda = 0;
+//        int puntero = fila;
+//        TipoCelda tipo = TipoCelda.BLANCO;
+//        while((tipo == TipoCelda.BLANCO)||(tipo == TipoCelda.NEUTRO)&&(celda<9)){
+//            puntero+=1;
+//            tipo = listaCeldas.get(puntero).getTipocelda();
+//            if((tipo == TipoCelda.BLANCO)||(tipo == TipoCelda.NEUTRO)){
+//                celda+=1;
+//            }
+//        }
+//        return celda;
+//    }
     
-    public int calcularPosiblesEnfilaAbajo(int fila){
-        int celda = 0;
-        int puntero = fila;
-        int maximoValor = dimension*dimension;
-        TipoCelda tipo = TipoCelda.BLANCO;
-        while(((tipo == TipoCelda.BLANCO)||(tipo == TipoCelda.NEUTRO))&&(celda<9)&&(puntero<maximoValor)){
-            puntero = puntero + dimension;
-            tipo = listaCeldas.get(puntero).getTipocelda();
-            if((tipo == TipoCelda.BLANCO)||(tipo == TipoCelda.NEUTRO)){
-                celda+=1;
-            }
-
-        }
-        return celda;
-    }
+//    public int calcularPosiblesEnfilaAbajo(int fila){
+//        int celda = 0;
+//        int puntero = fila;
+//        int maximoValor = dimension*dimension;
+//        TipoCelda tipo = TipoCelda.BLANCO;
+//        while(((tipo == TipoCelda.BLANCO)||(tipo == TipoCelda.NEUTRO))&&(celda<9)&&(puntero<maximoValor)){
+//            puntero = puntero + dimension;
+//            tipo = listaCeldas.get(puntero).getTipocelda();
+//            if((tipo == TipoCelda.BLANCO)||(tipo == TipoCelda.NEUTRO)){
+//                celda+=1;
+//            }
+//
+//        }
+//        return celda;
+//    }
 
     public int revisarProximoNulo(int posicion,int numero){
         int celda = numero;
@@ -211,19 +212,6 @@ public class Administrador {
         }
         return celda;
     }
-//    public int revisarProximoNuloAbajo(int posicion,int numero){
-//        int celda = numero;
-//        int puntero = posicion;
-//        TipoCelda tipo = TipoCelda.BLANCO;
-//        while((celda<9)&&(tipo == TipoCelda.BLANCO)){
-//            puntero=puntero+dimension;
-//            tipo = listaCeldas.get(puntero).getTipocelda(); 
-//            if(tipo == TipoCelda.BLANCO){
-//                celda+=1;
-//            }
-//        }
-//        return celda;
-//    }
     
     public void asignarBarraSuperior(){
         String [] arr = {"Negro", "CeldaInferior"};
@@ -259,7 +247,23 @@ public class Administrador {
         }
     }
     
-    
+    public void asignarCentrosLibres(){
+        //int indice = dimension;
+        System.out.println("Dimension "+dimension);
+        TipoCelda tipo;
+        int recorrido = ((dimension * dimension)-1);
+        recorrido = recorrido-dimension;
+        System.out.println("El recorrido llega hasta "+recorrido);
+        for(int x=15; x <= recorrido; x++){
+            //indice= indice+1;
+            System.out.println("indice "+x);
+            tipo = listaCeldas.get(x).getTipocelda();
+            if(tipo == TipoCelda.NEUTRO){
+                //System.out.println("Encontro Neutro en "+x);
+                asignarCentroHorizontales(x);
+            }
+        }          
+    }
     public int revisarCruce(int numero,int posicion, int maximo){
         int contador = 0;
         int signumero = numero+1;
@@ -298,9 +302,8 @@ public class Administrador {
             posicionFila = posicionFila + 1;
             listaCeldas.get(posicionFila).asignarCeldaBlanco();
         }
-        posicionFila = posicionFila + 1;
-        int posicionMaximo = (posicion+maximo)+1;
-        if(posicionFila <= posicionMaximo){
+        if(numero<maximo){
+            posicionFila = posicionFila + 1;
             listaCeldas.get(posicionFila).asignarCeldaNegro();
         }
     }
@@ -376,33 +379,72 @@ public class Administrador {
     }
     
     public int calcularCeldaDerecha(int posicion){
-        int filaEnMatriz = listaCeldas.get(posicion).getFilaEnMatriz();
-        int finDeLinea = (dimension * filaEnMatriz)-1;
-        int valoresPosibles = finDeLinea-posicion; 
-        if(valoresPosibles > 9){
-            valoresPosibles = 9;
-        }
-        return valoresPosibles;
-    }
-    
-    public int calcularAbajo(int posicion){
         int contador = 0;
-        posicion = posicion + dimension;
-        int fila = listaCeldas.get(posicion).getFilaEnMatriz();
-        int ultimaFila = ((dimension-fila)*dimension)+posicion;
-        TipoCelda tipo = listaCeldas.get(posicion).getTipocelda();
-        while((tipo == TipoCelda.BLANCO || tipo == TipoCelda.NEUTRO) && contador<9){
-            contador+=1;
-            posicion = posicion + dimension;
-            if(posicion <= ultimaFila){
-                tipo = listaCeldas.get(posicion).getTipocelda();
-            }
-            else{
-                return contador;
+        int filaEnMatriz = listaCeldas.get(posicion).getFilaEnMatriz();
+        int finDeLinea = (dimension*filaEnMatriz)-1;
+        int valoresPosibles = finDeLinea-posicion;
+        if(valoresPosibles >= 5){
+            valoresPosibles = 5;
+        }
+        if(valoresPosibles >= 2){
+            posicion = posicion + 1;
+            TipoCelda tipo = listaCeldas.get(posicion).getTipocelda();
+            while((tipo == TipoCelda.BLANCO || tipo == TipoCelda.NEUTRO) && (contador < valoresPosibles)){
+              contador+=1;
+              posicion = posicion + 1;
+              if(posicion <= finDeLinea){
+                  tipo = listaCeldas.get(posicion).getTipocelda();
+              }
+              else{
+                  return contador;
+              }
             }
         }
         return contador;
     }
+    
+    public int calcularAbajo(int posicion){
+        int contador = 0;
+        //posicion = posicion + dimension;
+        
+        
+        int filaEnMatriz = listaCeldas.get(posicion).getFilaEnMatriz();
+        int finDeColumna = dimension;
+        int ultimaFila = ((dimension-filaEnMatriz)*dimension)+posicion;
+        int valoresPosibles = finDeColumna-filaEnMatriz;
+        if(valoresPosibles >= 5){
+            valoresPosibles = 5;
+        }
+        if(valoresPosibles >= 2){
+            posicion = posicion + dimension;
+            TipoCelda tipo = listaCeldas.get(posicion).getTipocelda();
+            while((tipo == TipoCelda.BLANCO || tipo == TipoCelda.NEUTRO) && (contador < valoresPosibles)){
+              contador+=1;
+              posicion = posicion + dimension;
+              if(posicion <= ultimaFila){
+                  tipo = listaCeldas.get(posicion).getTipocelda();
+              }
+              else{
+                  return contador;
+              }
+            }
+        }
+        return contador;
+    }
+        
+//        TipoCelda tipo = listaCeldas.get(posicion).getTipocelda();
+//        while((tipo == TipoCelda.BLANCO || tipo == TipoCelda.NEUTRO) && contador<9){
+//            contador+=1;
+//            posicion = posicion + dimension;
+//            if(posicion <= ultimaFila){
+//                tipo = listaCeldas.get(posicion).getTipocelda();
+//            }
+//            else{
+//                return contador;
+//            }
+//        }
+//        return contador;
+    
     public int calcularMaximo(int valor){
         int base = 9;
         int suma = 0;
