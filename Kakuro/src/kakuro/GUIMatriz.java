@@ -33,7 +33,9 @@ public class GUIMatriz extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jButton1.setText("jButton1");
+        jButton1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jButton1.setText("GENERAR");
+        jButton1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -57,20 +59,20 @@ public class GUIMatriz extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap(113, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(197, Short.MAX_VALUE)
                 .addComponent(jpanelDesign, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(95, 95, 95))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
-                .addGap(310, 310, 310)
-                .addComponent(jButton1)
+                .addGap(291, 291, 291)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(64, 64, 64)
-                .addComponent(jButton1)
+                .addGap(52, 52, 52)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jpanelDesign, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(41, Short.MAX_VALUE))
@@ -91,59 +93,74 @@ public class GUIMatriz extends javax.swing.JFrame {
         admin.asignarBarraDerecha();
         admin.asignarBarraSuperior();
         admin.asignarCentrosLibres();
-        
-        
 
         listaCeldas = admin.getListaCeldas();
         jpanelDesign.setLayout(new GridLayout(0,14,0,0));
+        boolean TipoPanel = true;
         for (int recorrido = 0; recorrido < listaCeldas.size();recorrido++){
             Celda celda = listaCeldas.get(recorrido);
             TipoCelda tipo = celda.getTipocelda();
             GUICelda panel = null;
+            GUICeldaBlanco panelBlanco = null;
             String valorInferior;
             String valorSuperior;
             if(null != tipo)switch (tipo) {
                 case ABAJO:
-                    panel = new GUICelda();
-                    valorInferior = String.valueOf(celda.getValorInferior());
-                    panel.agregarValorAbajo(valorInferior);
-                    break;
+                panel = new GUICelda();
+                valorInferior = String.valueOf(celda.getValorInferior());
+                panel.agregarValorAbajo(valorInferior);
+                TipoPanel = true;
+                break;
                 case ARRIBA:
-                    panel = new GUICelda();
-                    valorSuperior = String.valueOf(celda.getValorSuperior());
-                    panel.agregarValorArriba(valorSuperior);
-                    break;
-                case BLANCO: 
-                    panel = new GUICelda();              
-                    panel.modificarFondo(Color.white);
-                    break;
+                panel = new GUICelda();
+                valorSuperior = String.valueOf(celda.getValorSuperior());
+                panel.agregarValorArriba(valorSuperior);
+                TipoPanel = true;
+                break;
+                case BLANCO:
+                panelBlanco = new GUICeldaBlanco();
+                TipoPanel = false;
+                panelBlanco.habilitarTextField();
+                break;
                 case NEUTRO:
-                    panel = new GUICelda();
-                    panel.agregarValorNulos();
-                    panel.modificarFondo(Color.black); 
-                    break;
+                panel = new GUICelda();
+                panel.agregarValorNulos();
+                panel.modificarFondo(Color.black);
+                TipoPanel = true;
+                break;
                 case NEGRO:
-                    panel = new GUICelda();
-                    panel.agregarValorNulos();
-                    panel.modificarFondo(Color.black); 
-                    break;
+                panel = new GUICelda();
+                panel.agregarValorNulos();
+                panel.modificarFondo(Color.black);
+                TipoPanel = true;
+                break;
                 case CENTRO:
-                    panel = new GUICelda();
-                    valorInferior = String.valueOf(celda.getValorInferior());
-                    valorSuperior = String.valueOf(celda.getValorSuperior());
-                    panel.agregarValorAmbos(valorSuperior,valorInferior);
-                    break;
+                panel = new GUICelda();
+                valorInferior = String.valueOf(celda.getValorInferior());
+                valorSuperior = String.valueOf(celda.getValorSuperior());
+                panel.agregarValorAmbos(valorSuperior,valorInferior);
+                TipoPanel = true;
+                break;
                 default:
-                    System.out.println("Entro en caso desconocido");
-                    break;
+                System.out.println("Entro en caso desconocido");
+                break;
             }
-            jpanelDesign.add(panel);
+            if(TipoPanel){
+                jpanelDesign.add(panel);
+            }
+            else{
+                jpanelDesign.add(panelBlanco);
+            }
             jpanelDesign.revalidate();
             jpanelDesign.repaint();
-            
+
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    public void refrescarMatriz(){
+        jpanelDesign.revalidate();
+        jpanelDesign.repaint();
+    }
     /**
      * @param args the command line arguments
      */
