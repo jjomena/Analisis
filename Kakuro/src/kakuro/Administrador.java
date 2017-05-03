@@ -122,7 +122,10 @@ public class Administrador {
                 int minimoFila = 2;
                 if(maximoFila>2){
                     int numero = (int) Math.floor(Math.random()*(maximoFila-minimoFila+1)+minimoFila);
-                    numero = revisarProximoNulo(fila+numero,numero);
+                    if(numero == 5){
+                        numero = 4;
+                    }
+                    //numero = revisarProximoNulo(fila+numero,numero);
                     int maximo = calcularMaximo(numero);
                     int minimo = calcularMinimo(numero);
                     int valorEntero = (int) Math.floor(Math.random()*(maximo-minimo+1)+minimo);
@@ -213,7 +216,8 @@ public class Administrador {
                     int minimo = calcularMinimo(numero);
                     int valorEntero = (int) Math.floor(Math.random()*(maximo-minimo+1)+minimo);
                     listaCeldas.get(posicion).asignarCeldaInferior(valorEntero);
-                    asignarBlancosVerticales(posicion,numero);
+                    //asignarBlancosVerticales(posicion,numero);
+                    asignarBlancosCentrosVerticales(posicion,numero,numeroMaximo);
                 }
                 else{
                     //listaCeldas.get(posicion).asignarCeldaNegro();
@@ -291,18 +295,7 @@ public class Administrador {
         }
         return contador;
     }
-    /*Asignar celdas verticales en blanco */
-    public void asignarBlancosVerticales(int posicion,int numero){
-        int posicionFila = posicion;
-        for(int x = 0; x<numero; x++){
-            posicionFila = posicionFila + dimension;
-            listaCeldas.get(posicionFila).asignarCeldaBlanco();
-        }
-        if(numero < 9){
-            posicionFila = posicionFila + dimension;
-            asignarCentroHorizontales(posicionFila);
-        }
-    }
+
     /*Asignar celdas horizontales en blanco */
     public void asignarBlancosHorizontales(int posicion,int numero,int maximo){
         int posicionFila = posicion;
@@ -373,7 +366,7 @@ public class Administrador {
             int maximo = calcularMaximo(valorDerecha);
             int minimo = calcularMinimo(valorDerecha);
             int valorEntero = (int) Math.floor(Math.random()*(maximo-minimo+1)+minimo);
-            asignarBlancosHorizontales(posicion,valorDerecha,cantidadDisponibleDerecha);
+            //asignarBlancosHorizontales(posicion,valorDerecha,cantidadDisponibleDerecha);
             //
             N = cantidadDisponibleAbajo;
             int valorAbajo = (int) Math.floor(Math.random()*(N-M+1)+M);
@@ -381,30 +374,64 @@ public class Administrador {
             int maximo2 = calcularMaximo(valorAbajo);
             int minimo2 = calcularMinimo(valorAbajo);
             int valorEntero2 = (int) Math.floor(Math.random()*(maximo2-minimo2+1)+minimo2);
-            asignarBlancosCentrosVerticales(posicion,valorAbajo,cantidadDisponibleAbajo);
-            listaCeldas.get(posicion).asignarCeldaMixta(valorEntero, valorEntero2); 
+            //asignarBlancosCentrosVerticales(posicion,valorAbajo,cantidadDisponibleAbajo);
+            if((valorDerecha < 9) && (valorAbajo < 9) && (valorDerecha<cantidadDisponibleDerecha) && (valorAbajo < cantidadDisponibleAbajo)){
+                asignarBlancosCentrosVerticales(posicion,valorAbajo,cantidadDisponibleAbajo);
+                asignarBlancosHorizontales(posicion,valorDerecha,cantidadDisponibleDerecha);
+                listaCeldas.get(posicion).asignarCeldaMixta(valorEntero, valorEntero2);
+            }
+            else if((valorDerecha < 9) && (valorAbajo < 9) &&(valorDerecha<cantidadDisponibleDerecha)){
+                asignarBlancosHorizontales(posicion,valorDerecha,cantidadDisponibleDerecha);
+                listaCeldas.get(posicion).asignarCeldaSuperior(valorEntero);
+            }
+            else if((valorDerecha < 9) && (valorAbajo < 9) && (valorAbajo < cantidadDisponibleAbajo)){
+                asignarBlancosCentrosVerticales(posicion,valorAbajo,cantidadDisponibleAbajo);
+                listaCeldas.get(posicion).asignarCeldaInferior(valorEntero2);
+            }
+            else if((valorDerecha < 9) && (valorAbajo > 9) && (valorDerecha<cantidadDisponibleDerecha)){
+                asignarBlancosHorizontales(posicion,valorDerecha,cantidadDisponibleDerecha);
+                listaCeldas.get(posicion).asignarCeldaSuperior(valorEntero);
+            }
+            else if((valorDerecha > 9)&&(valorAbajo <9)&& (valorAbajo < cantidadDisponibleAbajo)){
+                asignarBlancosCentrosVerticales(posicion,valorAbajo,cantidadDisponibleAbajo);
+                listaCeldas.get(posicion).asignarCeldaInferior(valorEntero2);
+            }
+            else{
+                listaCeldas.get(posicion).asignarCeldaNegro();
+            }
+             
         }
         else if((cantidadDisponibleDerecha > 2) && (cantidadDisponibleAbajo < 2)){
             int N = cantidadDisponibleDerecha;
             int M = 2;
             int valorDerecha = (int) Math.floor(Math.random()*(N-M+1)+M);
             valorDerecha = valorDerecha + revisarCruceHorizontal(valorDerecha,posicion,cantidadDisponibleDerecha);
-            int maximo2 = calcularMaximo(valorDerecha);
-            int minimo2 = calcularMinimo(valorDerecha);
-            int valorEntero2 = (int) Math.floor(Math.random()*(maximo2-minimo2+1)+minimo2);
-            asignarBlancosHorizontales(posicion,valorDerecha,cantidadDisponibleDerecha);
-            listaCeldas.get(posicion).asignarCeldaSuperior(valorEntero2);
+            if(valorDerecha > 9 || valorDerecha >= cantidadDisponibleDerecha){
+                listaCeldas.get(posicion).asignarCeldaNegro();
+            }else{
+                int maximo2 = calcularMaximo(valorDerecha);
+                int minimo2 = calcularMinimo(valorDerecha);
+                int valorEntero2 = (int) Math.floor(Math.random()*(maximo2-minimo2+1)+minimo2);
+                asignarBlancosHorizontales(posicion,valorDerecha,cantidadDisponibleDerecha);
+                listaCeldas.get(posicion).asignarCeldaSuperior(valorEntero2);
+            }
+
         }
         else if((cantidadDisponibleDerecha < 2) && (cantidadDisponibleAbajo > 2)){
             int N = cantidadDisponibleAbajo;
             int M = 2;
             int valorAbajo= (int) Math.floor(Math.random()*(N-M+1)+M);
             valorAbajo = valorAbajo + revisarCruce(valorAbajo,posicion,cantidadDisponibleAbajo);
-            int maximo2 = calcularMaximo(valorAbajo);
-            int minimo2 = calcularMinimo(valorAbajo);
-            int valorEntero2 = (int) Math.floor(Math.random()*(maximo2-minimo2+1)+minimo2);
-            asignarBlancosCentrosVerticales(posicion,valorAbajo,cantidadDisponibleAbajo);
-            listaCeldas.get(posicion).asignarCeldaInferior(valorEntero2);
+            if(valorAbajo > 9 || valorAbajo >= cantidadDisponibleAbajo){
+                listaCeldas.get(posicion).asignarCeldaNegro();
+            }
+            else{
+                int maximo2 = calcularMaximo(valorAbajo);
+                int minimo2 = calcularMinimo(valorAbajo);
+                int valorEntero2 = (int) Math.floor(Math.random()*(maximo2-minimo2+1)+minimo2);
+                asignarBlancosCentrosVerticales(posicion,valorAbajo,cantidadDisponibleAbajo);
+                listaCeldas.get(posicion).asignarCeldaInferior(valorEntero2);
+            }
         }
         else{
             listaCeldas.get(posicion).asignarCeldaNegro();

@@ -5,18 +5,13 @@ import java.awt.GridLayout;
 import java.util.List;
 import javax.swing.JPanel;
 
-/**
- *
- * @author Joaquín
- */
+
 public class GUIMatriz extends javax.swing.JFrame {
     private Administrador admin;
     private List<Celda> listaCeldas;
     
     
-    /**
-     * Creates new form GUIMatriz
-     */
+ 
     public GUIMatriz() {
         initComponents();
         this.setExtendedState(MAXIMIZED_BOTH);
@@ -97,6 +92,7 @@ public class GUIMatriz extends javax.swing.JFrame {
         admin.asignarBarraSuperior();
         admin.asignarCentrosLibres();
         
+        
 
         listaCeldas = admin.getListaCeldas();
         jpanelDesign.setLayout(new GridLayout(0,14,0,0));
@@ -123,7 +119,8 @@ public class GUIMatriz extends javax.swing.JFrame {
                     break;
                 case NEUTRO:
                     panel = new GUICelda();
-                    panel.agregarValorAmbos("", "");
+                    panel.agregarValorNulos();
+                    panel.modificarFondo(Color.black); 
                     break;
                 case NEGRO:
                     panel = new GUICelda();
