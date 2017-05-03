@@ -25,6 +25,7 @@ public class Administrador {
         listaCeldas.clear();
     }
     
+    /*Permite generar la matriz inicial,clasificarlo en su posición y generando celdas en estado Neutro*/
     public void generarListaCeldas(int dimension){
         this.dimension = dimension;
         posicionEnMatriz posicion = null;
@@ -57,13 +58,13 @@ public class Administrador {
             recorrido++;
         }
      }
-     
+     /*Agrega las celdas al ArrayList */
      public void agregarCelda(TipoCelda tipo,posicionEnMatriz posicion,int indice, int linea){
          Celda cl = new Celda(tipo,posicion,indice,linea);
          this.listaCeldas.add(cl);  
      }
      
-    
+    /*Genera los valores para la Barra Derecha*/
     public void asignarBarraDerecha(){
         String [] arr = {"Negro", "CeldaInferior"};
         int fila = dimension-1;
@@ -103,7 +104,7 @@ public class Administrador {
         }
         
     }
-    
+    /*Genera los valores para la Barra Izquierda*/
     public void asignarBarraIzquierda(){
         String [] arr = {"Negro", "CeldaSuperior"};
         listaCeldas.get(0).asignarCeldaNegro();
@@ -141,6 +142,7 @@ public class Administrador {
         }
     }
     
+    /*Asigna los valores para la Barra Inferior*/
     public void asignarBarraInferior(){
         String [] arr = {"Negro", "CeldaSuperior"};
         int posicion = dimension*(dimension-1);
@@ -190,6 +192,7 @@ public class Administrador {
         return celda;
     }
     
+    /*Asigna valores para la Barra Superior*/
     public void asignarBarraSuperior(){
         String [] arr = {"Negro", "CeldaInferior"};
         listaCeldas.get(0).asignarCeldaNegro();
@@ -229,6 +232,7 @@ public class Administrador {
         }
     }
     
+    /*Asigna Centros horizontales, valores en el centro*/
     public void asignarCentrosLibres(){
         //int indice = dimension;
         System.out.println("Dimension "+dimension);
@@ -246,6 +250,7 @@ public class Administrador {
             }
         }          
     }
+    /*Permite revisar si hay blancos adicionales, verticalmente*/
     public int revisarCruce(int numero,int posicion, int maximo){
         int contador = 0;
         int signumero = numero+1;
@@ -265,6 +270,8 @@ public class Administrador {
         }
         return contador;
     }
+    
+    /*Permite revisar si hay blancos adicionales, horizontalmente*/
     public int revisarCruceHorizontal(int numero,int posicion,int maximo){
         int contador = 0;
         int signumero = numero+1;
@@ -284,7 +291,7 @@ public class Administrador {
         }
         return contador;
     }
-    
+    /*Asignar celdas verticales en blanco */
     public void asignarBlancosVerticales(int posicion,int numero){
         int posicionFila = posicion;
         for(int x = 0; x<numero; x++){
@@ -296,7 +303,7 @@ public class Administrador {
             asignarCentroHorizontales(posicionFila);
         }
     }
-    
+    /*Asignar celdas horizontales en blanco */
     public void asignarBlancosHorizontales(int posicion,int numero,int maximo){
         int posicionFila = posicion;
         TipoCelda tipo;
@@ -312,6 +319,7 @@ public class Administrador {
             }
         }
     }
+    /*Permite asignar las celdas enblanco para las celdas centrales*/
     public void asignarBlancosCentrosVerticales(int posicion,int numero,int maximo){
         int posicionFila = posicion;
         TipoCelda tipo;
@@ -328,6 +336,7 @@ public class Administrador {
         }
     }
     
+    /*Permite asignar Celdas en Negro Verticales*/
     public void asignarNegrosVerticales(int posicion,int numero){
         int posicionFila = posicion;
         TipoCelda tipo;
@@ -339,6 +348,7 @@ public class Administrador {
             }
         } 
     }
+    /*Permite asignar Celdas enNegro Horizontales*/
     public void asignarNegrosHorizontales(int posicion,int numero){
         int posicionFila = posicion;
         TipoCelda tipo;
@@ -351,6 +361,7 @@ public class Administrador {
         } 
     }
     
+    /*Permite asignar las celdas centrales*/
     public void asignarCentroHorizontales(int posicion){
         int cantidadDisponibleDerecha = calcularCeldaDerecha(posicion);
         int cantidadDisponibleAbajo = calcularAbajo(posicion);
@@ -400,14 +411,15 @@ public class Administrador {
         }
     }
     
+    /*Permite calcular celdas disponibles a la Derecha*/
     public int calcularCeldaDerecha(int posicion){
         int contador = 0;
         int filaEnMatriz = listaCeldas.get(posicion).getFilaEnMatriz();
         int finDeLinea = (dimension*filaEnMatriz)-1;
         int valoresPosibles = finDeLinea-posicion;
-        //if(valoresPosibles >= 5){
-            //valoresPosibles = 5;
-        //}
+        if(valoresPosibles >= 5){
+            valoresPosibles = 5;
+        }
         if(valoresPosibles >= 2){
             posicion = posicion + 1;
             TipoCelda tipo = listaCeldas.get(posicion).getTipocelda();
@@ -425,15 +437,16 @@ public class Administrador {
         return contador;
     }
     
+    /*Permite calcular celdas disponibles hacia abajo*/
     public int calcularAbajo(int posicion){
         int contador = 0;
         int filaEnMatriz = listaCeldas.get(posicion).getFilaEnMatriz();
         int finDeColumna = dimension;
         int ultimaFila = ((dimension-filaEnMatriz)*dimension)+posicion;
         int valoresPosibles = finDeColumna-filaEnMatriz;
-        //if(valoresPosibles >= 5){
-            //valoresPosibles = 5;
-        //}
+        if(valoresPosibles >= 5){
+           valoresPosibles = 5;
+        }
         if(valoresPosibles >= 2){
             posicion = posicion + dimension;
             TipoCelda tipo = listaCeldas.get(posicion).getTipocelda();
@@ -450,6 +463,8 @@ public class Administrador {
         }
         return contador;
     } 
+    
+    /*Valor maximo que puede tomar una celda segun el numero de espacios blancos*/
     public int calcularMaximo(int valor){
         int base = 9;
         int suma = 0;
@@ -459,6 +474,7 @@ public class Administrador {
         return suma;
     }
     
+    /*Valor minimo que puede tomar una celda segun el numero de espacios blancos */
     public int calcularMinimo(int valor){
         int base = 1;
         int suma = 0;
