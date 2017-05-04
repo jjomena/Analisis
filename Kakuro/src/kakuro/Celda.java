@@ -1,14 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package kakuro;
 
-/**
- *
- * @author Joaquín
- */
 public class Celda {
     TipoCelda tipocelda;
     public posicionEnMatriz posicionEnMatriz;
@@ -17,6 +9,8 @@ public class Celda {
     private int valorSuperior;
     private int valorInferior;
     private int valorContenido; 
+    private int cantidadSuperior;
+    private int cantidadInferior;
     
     public Celda(){
     }
@@ -30,19 +24,23 @@ public class Celda {
     }
 
     
-    public void asignarCeldaSuperior(int valorSuperior){
+    public void asignarCeldaSuperior(int valorSuperior,int cantidadSuperior){
         setTipocelda(TipoCelda.ARRIBA);
-        this.valorSuperior = valorSuperior;  
+        this.valorSuperior = valorSuperior; 
+        this.cantidadSuperior = cantidadSuperior;
     }
     
-    public void asignarCeldaMixta(int valorSuperior,int valorInferior){
+    public void asignarCeldaMixta(int valorSuperior,int valorInferior,int cantidadSuperior, int cantidadInferior){
         setTipocelda(TipoCelda.CENTRO);
         this.valorSuperior = valorSuperior;
         this.valorInferior = valorInferior;
+        this.cantidadSuperior = cantidadSuperior;
+        this.cantidadInferior = cantidadInferior;
     }
-    public void asignarCeldaInferior(int valorInferior){
+    public void asignarCeldaInferior(int valorInferior,int cantidadInferior){
         setTipocelda(TipoCelda.ABAJO);
         this.valorInferior = valorInferior;
+        this.cantidadInferior = cantidadInferior;
     }
     
     public void asignarCeldaBlanco(){
@@ -111,6 +109,23 @@ public class Celda {
     public void setValorContenido(int valorContenido) {
         this.valorContenido = valorContenido;
     }
+
+    public int getCantidadSuperior() {
+        return cantidadSuperior;
+    }
+
+    public void setCantidadSuperior(int cantidadSuperior) {
+        this.cantidadSuperior = cantidadSuperior;
+    }
+
+    public int getCantidadInferior() {
+        return cantidadInferior;
+    }
+
+    public void setCantidadInferior(int cantidadInferior) {
+        this.cantidadInferior = cantidadInferior;
+    }
+    
     
     
 }
