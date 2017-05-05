@@ -1,7 +1,9 @@
 
 package kakuro;
 
-public class Celda {
+import java.io.Serializable;
+
+public class Celda implements Serializable{
     TipoCelda tipocelda;
     public posicionEnMatriz posicionEnMatriz;
     public int posicionEnLista;
@@ -124,6 +126,10 @@ public class Celda {
 
     public void setCantidadInferior(int cantidadInferior) {
         this.cantidadInferior = cantidadInferior;
+    }
+
+    String getNombre() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
     

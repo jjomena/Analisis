@@ -2,13 +2,28 @@ package kakuro;
 
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 
 public class GUIMatriz extends javax.swing.JFrame {
     private Administrador admin;
-    private List<Celda> listaCeldas;
+    private static ArrayList<Celda> listaCeldas;
+    static char sep = File.separatorChar;
+    static String fichero ="C:/Users/Joaquín/Documents/Analisis/";
     
     
  
@@ -16,6 +31,8 @@ public class GUIMatriz extends javax.swing.JFrame {
         initComponents();
         this.setExtendedState(MAXIMIZED_BOTH);
         admin = new Administrador();
+        panelGuardar.setVisible(false);
+        jFileChooserRuta.setVisible(false);
     }
     
 
@@ -30,12 +47,18 @@ public class GUIMatriz extends javax.swing.JFrame {
 
         jButton1 = new javax.swing.JButton();
         jpanelDesign = new javax.swing.JPanel();
+        btnGuardar = new javax.swing.JButton();
+        btnCargar = new javax.swing.JButton();
+        panelGuardar = new javax.swing.JPanel();
+        labelNombre = new javax.swing.JLabel();
+        txtNombreArchivo = new javax.swing.JTextField();
+        btnAceptar = new javax.swing.JButton();
+        jFileChooserRuta = new javax.swing.JFileChooser();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jButton1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jButton1.setText("GENERAR");
-        jButton1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -55,27 +78,105 @@ public class GUIMatriz extends javax.swing.JFrame {
             .addGap(0, 271, Short.MAX_VALUE)
         );
 
+        btnGuardar.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        btnGuardar.setText("GUARDAR");
+        btnGuardar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGuardarActionPerformed(evt);
+            }
+        });
+
+        btnCargar.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        btnCargar.setText("CARGAR");
+        btnCargar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCargarActionPerformed(evt);
+            }
+        });
+
+        panelGuardar.setBackground(new java.awt.Color(255, 255, 255));
+
+        labelNombre.setText("INGRESE NOMBRE ARCHIVO:");
+
+        btnAceptar.setText("Aceptar");
+        btnAceptar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAceptarActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout panelGuardarLayout = new javax.swing.GroupLayout(panelGuardar);
+        panelGuardar.setLayout(panelGuardarLayout);
+        panelGuardarLayout.setHorizontalGroup(
+            panelGuardarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelGuardarLayout.createSequentialGroup()
+                .addGroup(panelGuardarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelGuardarLayout.createSequentialGroup()
+                        .addGap(35, 35, 35)
+                        .addGroup(panelGuardarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(labelNombre)
+                            .addComponent(txtNombreArchivo, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(panelGuardarLayout.createSequentialGroup()
+                        .addGap(67, 67, 67)
+                        .addComponent(btnAceptar)))
+                .addContainerGap(38, Short.MAX_VALUE))
+        );
+        panelGuardarLayout.setVerticalGroup(
+            panelGuardarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelGuardarLayout.createSequentialGroup()
+                .addGap(18, 18, 18)
+                .addComponent(labelNombre)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(txtNombreArchivo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btnAceptar)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jFileChooserRuta.setCurrentDirectory(new java.io.File("C:\\Users\\Joaquín\\Documents\\Analisis"));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(197, Short.MAX_VALUE)
-                .addComponent(jpanelDesign, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
-                .addGap(291, 291, 291)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jFileChooserRuta, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(33, 33, 33))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(panelGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnCargar, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(jpanelDesign, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(52, 52, 52)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jpanelDesign, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(41, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(121, 121, 121)
+                                .addComponent(jpanelDesign, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(153, 153, 153)
+                                .addComponent(panelGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(165, 165, 165)
+                        .addComponent(jFileChooserRuta, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addGap(138, 138, 138)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(21, 21, 21)
+                        .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnCargar, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(16, Short.MAX_VALUE))
         );
 
         pack();
@@ -93,8 +194,15 @@ public class GUIMatriz extends javax.swing.JFrame {
         admin.asignarBarraDerecha();
         admin.asignarBarraSuperior();
         admin.asignarCentrosLibres();
-
         listaCeldas = admin.getListaCeldas();
+        pintarMatriz();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    public void pintarMatriz(){
+        //listaCeldas = admin.getListaCeldas();
+        jpanelDesign.removeAll();
+        jpanelDesign.revalidate();
+        jpanelDesign.repaint();
         jpanelDesign.setLayout(new GridLayout(0,14,0,0));
         boolean TipoPanel = true;
         for (int recorrido = 0; recorrido < listaCeldas.size();recorrido++){
@@ -155,8 +263,62 @@ public class GUIMatriz extends javax.swing.JFrame {
             jpanelDesign.repaint();
 
         }
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }
+    private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
 
+        panelGuardar.setVisible(true);
+    }//GEN-LAST:event_btnGuardarActionPerformed
+
+    private void btnCargarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCargarActionPerformed
+  
+        jFileChooserRuta.setVisible(true);
+   int returnVal = jFileChooserRuta.showOpenDialog(this);
+    if (returnVal == JFileChooser.APPROVE_OPTION) {
+        String ruta = jFileChooserRuta.getSelectedFile().getAbsolutePath();
+        cargarArrayList(ruta);
+    }//GEN-LAST:event_btnCargarActionPerformed
+    }
+    private void btnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarActionPerformed
+        // TODO add your handling code here:
+        String nombreArchivo = txtNombreArchivo.getText();
+        nombreArchivo = nombreArchivo+".txt";
+        fichero+=nombreArchivo;
+        nombreArchivo = "";
+        txtNombreArchivo.setText("");
+        panelGuardar.setVisible(false);
+        guardarArrayList(fichero);
+        
+    }//GEN-LAST:event_btnAceptarActionPerformed
+
+    public  void guardarArrayList(String fichero){
+        if(!listaCeldas.isEmpty()){
+            try {
+                FileOutputStream out = new FileOutputStream(fichero);
+                ObjectOutputStream ficheroSalida = new ObjectOutputStream(out);
+                ficheroSalida.writeObject(listaCeldas);
+                ficheroSalida.flush();
+                System.out.println("Archivo Creado exitosamente");
+            } catch (Exception e) {
+                 System.out.println("Problemas de serialización ");
+            }
+        }else{
+            System.out.println("La matriz se encuentra vacía");
+        }
+    }
+
+    public void cargarArrayList(String fichero)
+    {
+        listaCeldas.clear();
+        try{
+            FileInputStream in = new FileInputStream(fichero);
+            ObjectInputStream ois = new ObjectInputStream(in);
+            listaCeldas = (ArrayList<Celda>)(ois.readObject());
+            pintarMatriz();
+        }catch (Exception e){
+            System.out.println("Problemas de serializacion");
+        }
+        
+    }
     public void refrescarMatriz(){
         jpanelDesign.revalidate();
         jpanelDesign.repaint();
@@ -197,7 +359,14 @@ public class GUIMatriz extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAceptar;
+    private javax.swing.JButton btnCargar;
+    private javax.swing.JButton btnGuardar;
     private javax.swing.JButton jButton1;
+    private javax.swing.JFileChooser jFileChooserRuta;
     private javax.swing.JPanel jpanelDesign;
+    private javax.swing.JLabel labelNombre;
+    private javax.swing.JPanel panelGuardar;
+    private javax.swing.JTextField txtNombreArchivo;
     // End of variables declaration//GEN-END:variables
 }

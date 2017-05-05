@@ -6,18 +6,18 @@ import java.util.Random;
 
 
 public class Administrador {
-    private List<Celda> listaCeldas;
+    private ArrayList<Celda> listaCeldas;
     private int dimension;
     
     public Administrador(){
         listaCeldas = new ArrayList<Celda>();
     }
 
-    public List<Celda> getListaCeldas() {
+    public ArrayList<Celda> getListaCeldas() {
         return listaCeldas;
     }
 
-    public void setListaCeldas(List<Celda> listaCeldas) {
+    public void setListaCeldas(ArrayList<Celda> listaCeldas) {
         this.listaCeldas = listaCeldas;
     }
     
