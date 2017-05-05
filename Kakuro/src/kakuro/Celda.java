@@ -45,8 +45,9 @@ public class Celda {
         this.valorInferior = valorInferior;
     }
     
-    public void asignarCeldaBlanco(){
+    public void asignarCeldaBlanco(int valorContenido){
         setTipocelda(TipoCelda.BLANCO);
+        this.valorContenido = valorContenido;
     }
     
     public void asignarCeldaNeutro(){

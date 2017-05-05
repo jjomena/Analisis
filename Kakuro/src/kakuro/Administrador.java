@@ -8,9 +8,12 @@ import java.util.Random;
 public class Administrador {
     private List<Celda> listaCeldas;
     private int dimension;
+    private Matriz  matriz;
+    private ArrayList<Matriz> soluciones;
     
     public Administrador(){
         listaCeldas = new ArrayList<Celda>();
+        soluciones = new ArrayList<Matriz>();
     }
 
     public List<Celda> getListaCeldas() {
@@ -23,6 +26,34 @@ public class Administrador {
     
     public void limpiarLista(){
         listaCeldas.clear();
+    }
+
+    public Matriz getMatriz() {
+        return matriz;
+    }
+
+    public void setMatriz(Matriz matriz) {
+        this.matriz = matriz;
+    }
+
+    public ArrayList<Matriz> getSoluciones() {
+        return soluciones;
+    }
+
+    public void setSoluciones(ArrayList<Matriz> soluciones) {
+        this.soluciones = soluciones;
+    }
+
+    public int getDimension() {
+        return dimension;
+    }
+
+    public void setDimension(int dimension) {
+        this.dimension = dimension;
+    }
+    
+    public void setMatrizResultado(Matriz m){
+       this.soluciones.add(m);
     }
     
     /*Permite generar la matriz inicial,clasificarlo en su posición y generando celdas en estado Neutro*/
@@ -220,9 +251,6 @@ public class Administrador {
                     asignarBlancosCentrosVerticales(posicion,numero,numeroMaximo);
                 }
                 else{
-                    //listaCeldas.get(posicion).asignarCeldaNegro();
-                    //int posicionSiguiente = posicion + dimension;
-                    //listaCeldas.get(posicionSiguiente).asignarCeldaNegro();
                     asignarNegrosVerticales(posicion,numeroMaximo);
                 }
 
@@ -302,7 +330,7 @@ public class Administrador {
         TipoCelda tipo;
         for(int x = 0; x<numero; x++){
             posicionFila = posicionFila + 1;
-            listaCeldas.get(posicionFila).asignarCeldaBlanco();
+            listaCeldas.get(posicionFila).asignarCeldaBlanco(0);
         }
         if(numero<maximo){
             posicionFila = posicionFila + 1;
@@ -318,7 +346,7 @@ public class Administrador {
         TipoCelda tipo;
         for(int x = 0; x<numero; x++){
             posicionFila = posicionFila + dimension;
-            listaCeldas.get(posicionFila).asignarCeldaBlanco();
+            listaCeldas.get(posicionFila).asignarCeldaBlanco(0);
         }
         if(numero<maximo){
             posicionFila = posicionFila + dimension;
@@ -509,5 +537,74 @@ public class Administrador {
            suma = suma + (base+x); 
         }
         return suma;
-    } 
+    }
+    
+    public void converCreadaTOSolucion(){
+        matriz = new Matriz();
+        matriz.crearMatriz(dimension);
+        int  j=0;
+        int i = 0;
+        for(int index=0;index<listaCeldas.size();index++){
+            if(i==dimension){
+                j++;
+                i=0;
+            }
+            Celda celda = listaCeldas.get(index);
+            Celdaa celd;
+            if(null!=celda.getTipocelda())switch (celda.getTipocelda()) {
+                case NEGRO:
+                    celd = new Celdaa();
+                    matriz.setCelda(celd,j,i);
+                    break;
+                case ABAJO:
+                    celd = new Celdaa(-1,celda.getValorInferior());
+                    matriz.setCelda(celd,j,i);
+                    break;
+                case ARRIBA:
+                    celd = new Celdaa(celda.getValorSuperior(),-1);
+                    matriz.setCelda(celd,j,i);
+                    break;
+                case CENTRO:
+                    celd = new Celdaa(celda.getValorSuperior(),celda.getValorInferior());
+                    matriz.setCelda(celd,j,i);
+                    break;
+                case BLANCO:
+                    celd = new Celdaa(0);
+                    matriz.setCelda(celd, j, i);
+                    break;
+                default:
+                    System.out.println(j+"--"+i);
+                    break;
+            }
+            
+            i++;
+        }
+    }
+    
+    public void converSoluTOcreada(){
+        int index = 0;
+        for(int i=0;i<matriz.getTablero();i++){
+            for(int j=0;j<matriz.getTamano();j++){
+                Celdaa celda = matriz.getCelda()[i][j];
+                
+                if("t1".equals(celda.getTipo())){
+                    listaCeldas.get(index).setTipocelda(TipoCelda.NEUTRO);
+                }else if("t2".equals(celda.getTipo())){
+                    listaCeldas.get(index).setTipocelda(TipoCelda.BLANCO);
+                    
+                }else if("t3".equals(celda.getTipo())){
+                    if(celda.getDerecha()!=-1 && celda.getAbajo()!=-1){
+                        listaCeldas.get(index).asignarCeldaMixta(celda.getDerecha(),celda.getAbajo());
+                    }else if(celda.getDerecha()!=-1){
+                        listaCeldas.get(index).asignarCeldaSuperior(celda.getDerecha());
+                    }else{
+                        listaCeldas.get(index).asignarCeldaInferior(celda.getAbajo());
+                    }
+                }else if("t4".equals(celda.getTipo())){
+                        listaCeldas.get(index).asignarCeldaBlanco(celda.getValor());
+                }
+                
+            }
+        }
+    }
 }

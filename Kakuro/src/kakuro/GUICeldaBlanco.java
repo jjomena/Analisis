@@ -1,6 +1,8 @@
 
 package kakuro;
 
+import javax.swing.JTextField;
+
 public class GUICeldaBlanco extends javax.swing.JPanel {
 
     /**
@@ -11,9 +13,14 @@ public class GUICeldaBlanco extends javax.swing.JPanel {
         initComponents();
         txtValorCelda.setVisible(false);
     }
-    
+
     
     public void habilitarTextField(){
+        txtValorCelda.setVisible(true);
+    }
+    
+    public void agregarValor(String valor){
+        txtValorCelda.setText(valor);
         txtValorCelda.setVisible(true);
     }
     
