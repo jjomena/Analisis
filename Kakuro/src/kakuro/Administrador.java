@@ -583,27 +583,31 @@ public class Administrador {
     
     public void converSoluTOcreada(){
         int index = 0;
-        for(int i=0;i<matriz.getTablero();i++){
+        for(int i=0;i<matriz.getTamano();i++){
             for(int j=0;j<matriz.getTamano();j++){
-                Celdaa celda = matriz.getCelda()[i][j];
-                
-                if("t1".equals(celda.getTipo())){
-                    listaCeldas.get(index).setTipocelda(TipoCelda.NEUTRO);
-                }else if("t2".equals(celda.getTipo())){
-                    listaCeldas.get(index).setTipocelda(TipoCelda.BLANCO);
-                    
-                }else if("t3".equals(celda.getTipo())){
-                    if(celda.getDerecha()!=-1 && celda.getAbajo()!=-1){
-                        listaCeldas.get(index).asignarCeldaMixta(celda.getDerecha(),celda.getAbajo());
-                    }else if(celda.getDerecha()!=-1){
-                        listaCeldas.get(index).asignarCeldaSuperior(celda.getDerecha());
-                    }else{
-                        listaCeldas.get(index).asignarCeldaInferior(celda.getAbajo());
-                    }
-                }else if("t4".equals(celda.getTipo())){
+                Celdaa celda = matriz.getCelda()[i][j];               
+                if(null != celda.getTipo())switch (celda.getTipo()) {
+                    case "t1":
+                        listaCeldas.get(index).setTipocelda(TipoCelda.NEUTRO);
+                        break;
+                    case "t2":
+                        listaCeldas.get(index).setTipocelda(TipoCelda.BLANCO);
+                        break;
+                    case "t3":
+                        if(celda.getDerecha()!=-1 && celda.getAbajo()!=-1){
+                            listaCeldas.get(index).asignarCeldaMixta(celda.getDerecha(),celda.getAbajo());
+                        }else if(celda.getDerecha()!=-1){
+                            listaCeldas.get(index).asignarCeldaSuperior(celda.getDerecha());
+                        }else{
+                            listaCeldas.get(index).asignarCeldaInferior(celda.getAbajo());
+                        }   break;
+                    case "t4":
                         listaCeldas.get(index).asignarCeldaBlanco(celda.getValor());
+                        break;
+                    default:
+                        break;
                 }
-                
+                index++;
             }
         }
     }

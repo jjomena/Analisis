@@ -151,7 +151,7 @@ public class kakuroSolucionador {
     
     public static boolean columnaArr(Matriz m,int numero,int fila,int columna){
         for(int i=fila;i>0;i--){
-            if(columna<m.getTamano()){
+            if(columna<m.getTamano() && i<m.getTamano()){
                  Celdaa celda = m.getCelda()[i][columna];
                 if("t1".equals(celda.getTipo()) || "t3".equals(celda.getTipo())){           
                     return false;
@@ -220,7 +220,6 @@ public class kakuroSolucionador {
     }
     
     public static boolean correctoVector(Matriz m,int[] permutacion,int fila,int columna){
-        System.out.println("Fila: "+fila+" columna:"+columna);
         for(int i=0;i<permutacion.length;i++){
             if(columnaAba(m,permutacion[i],fila,columna+i)==true || columnaArr(m,permutacion[i],fila,columna+i) == true
                     || filaDer(m,permutacion[i],fila,columna+i) == true || filaIzq(m,permutacion[i],fila,columna+i)==true){
@@ -464,43 +463,36 @@ public class kakuroSolucionador {
     
     
     public static void resolverKakuro(Matriz m,ArrayList soluciones){
-    aax+=1;
-    System.out.println(filasListasN(m));
-    if(filasListas(m)==false){
-        System.out.println("filas listas");
-    }else{
-    int colocada = cantidadLista(m);
-    if(colocada >= m.getDimensiones()){
-        if(solucion(m)==false&&solucionColumnas(m)==true){
-                System.out.println("solucion");
-                soluciones.add(m); 
-        }else{
-            System.out.println("<(o.-)>");
-        }
-    }else{  
-        int[]menor = menorFilas(m);
-        if(menor[0]>1){
-            int fila = menor[1];
-            int columna = menor[2];
-            int espacios  = menor[0];
-            int result[] = new int[espacios];
-            Celdaa[][] celd = new Celdaa[m.getTamano()][m.getTamano()];
-            celd = clonarM(m);
-            Matriz m1 = new Matriz();
-            m1.setMatriz(celd);
-            //System.out.println("fila: "+fila+" columna:"+columna+m.getCelda()[fila][columna-1].toString());
-            ArrayList<int[]> resultado = new ArrayList<int[]>();
-            int numero = m.getCelda()[fila][columna-1].getDerecha();
-            backNum(result,numero,resultado,0);
-            if(resultado.size()==0){
-                //System.out.println("Fila: "+fila+" columna: "+columna+" numero:" +numero+" en espacios: "+espacios);
+        aax+=1;
+        int colocada = cantidadLista(m);
+        if(colocada >= m.getDimensiones()){
+            if(solucion(m)==false&&solucionColumnas(m)==true){
+                    System.out.println("solucion");
+                    soluciones.add(m); 
+            }else{
+                //System.out.println("-.-");
             }
-            //System.out.println("resultado: "+resultado.size());
-            for(int i=0;i<resultado.size();i++){
-                int [] permutacion = resultado.get(i);
-                if(correctoVector(m1,permutacion,fila,columna)!=true){
-                    if(columnaCorrecto(m,permutacion,fila,columna)!=true){// && revisarPermutacion(m,permutacion,fila,columna)!=true){
-                        m.getCelda()[fila][columna-1].setFila(true);
+        }else{  
+            int[]menor = menorFilas(m);
+            if(menor[0]>1){
+                int fila = menor[1];
+                int columna = menor[2];
+                int espacios  = menor[0];
+                int result[] = new int[espacios];
+                Celdaa[][] celd = new Celdaa[m.getTamano()][m.getTamano()];
+                celd = clonarM(m);
+                Matriz m1 = new Matriz();
+                m1.setMatriz(celd);
+                ArrayList<int[]> resultado = new ArrayList<int[]>();
+                int numero = m.getCelda()[fila][columna-1].getDerecha();
+                backNum(result,numero,resultado,0);
+                if(resultado.size()==0){
+                    System.out.println("Fila: "+fila+" columna: "+columna+" numero:" +numero+" en espacios: "+espacios);
+                }
+                for(int i=0;i<resultado.size();i++){
+                    int [] permutacion = resultado.get(i);
+                    if(correctoVector(m1,permutacion,fila,columna)!=true
+                            && columnaCorrecto(m,permutacion,fila,columna)!=true && revisarPermutacion(m,permutacion,fila,columna)!=true){
                         for(int j=0;j<espacios;j++){
                             m.getCelda()[fila][columna+j].setValor(permutacion[j]);
                             m.getCelda()[fila][columna+j].setTipo("t4");
@@ -508,15 +500,16 @@ public class kakuroSolucionador {
                         Matriz m2 = new Matriz();
                         Celdaa[][] c1 = clonarM(m);
                         m2.setMatriz(c1);
-                        resolverKakuro(m2,soluciones); 
+                        resolverKakuro(m2,soluciones);
                     }else{
                     }
-                    
                 }
+                //System.out.println("Resultado: "+resultado.size()+" no admitidas: "+contador+" admitidas: "+contado+" en la fila: "+fila+" columna: "+columna+" valor abajo: "+aa+" valor derecha: "+der+" faltan: "+mt);
+            }
+            else{
+                System.out.println("raios");
             }
         }
-    }
-    }
     }
     
     public static int[] siguientePermutacion(Matriz m){
@@ -599,7 +592,9 @@ public class kakuroSolucionador {
         }
         return false;
     }
-    private static boolean var = false;
+    
+                
+    
     public static void resolver(Matriz m,ArrayList soluciones){
         int colocada = cantidadLista(m);
         if(colocada >= m.getDimensiones()){
@@ -616,7 +611,7 @@ public class kakuroSolucionador {
             int[] casilla = siguientePermutacion(m);
             int fila = casilla[0];
             int columna = casilla[1];
-            //System.out.println("fila: "+fila+" columna: "+columna+" colocadas:"+colocada);
+            System.out.println("fila: "+fila+" columna: "+columna+" colocadas:"+colocada);
             int derecha = m.getCelda()[casilla[0]][casilla[1]].getDerecha();
             int abajo = m.getCelda()[casilla[0]][casilla[1]].getAbajo();
             m.getCelda()[fila][columna].setColumna(true);
@@ -639,13 +634,12 @@ public class kakuroSolucionador {
                                 m.getCelda()[fila][columna+j+1].setValor(permutacion[j]);
                                 m.getCelda()[fila][columna+j+1].setTipo("t4");
                             }
-                            //System.out.println(".-.-.-.-.-.-.-.");
                             Matriz m2 = new Matriz(); Celdaa[][] c1 = clonarM(m); m2.setMatriz(c1);
                             resolver(m2,soluciones); 
                         }   
                     }
-                    //Matriz m2 = new Matriz(); Celdaa[][] c1 = clonarM(m); m2.setMatriz(c1);
-                    //resolver(m2,soluciones); 
+                    Matriz m2 = new Matriz(); Celdaa[][] c1 = clonarM(m); m2.setMatriz(c1);
+                    resolver(m2,soluciones); 
                 }
                 
             }
@@ -668,10 +662,201 @@ public class kakuroSolucionador {
                         }
 
                     }
+                    Matriz m2 = new Matriz(); Celdaa[][] c1 = clonarM(m); m2.setMatriz(c1);
+                    resolver(m2,soluciones); 
                     //System.out.println("ABAJO: "+"Fila: "+fila+"columna: "+columna+" Numero: "+numero+" espacios: "+espacios+" permutaciones:"+resultado.size());
                 }
             }
         }
     }
+     
+    public static int cantidaFila(Matriz m){
+        int conta = 0;
+        for(int i=0;i<m.getTamano();i++){
+            for(int j=0;j<m.getTamano();j++){
+                if("t3".equals(m.getCelda()[i][j].getTipo()) && m.getCelda()[i][j].getDerecha() !=-1){
+                    conta++; 
+                }
+            }
+        }
+        return conta;
+    }
+    
+    public static int cantidaFilaL(Matriz m){
+        int conta = 0;
+        for(int i=0;i<m.getTamano();i++){
+            for(int j=0;j<m.getTamano();j++){
+                if("t3".equals(m.getCelda()[i][j].getTipo()) && m.getCelda()[i][j].getDerecha() !=-1){
+                    if(m.getCelda()[i][j].isFila()==true){
+                       conta++; 
+                    }
+                }
+            }
+        }
+        return conta;
+    }
+    
+    public static int cantidaColum(Matriz m){
+        int conta = 0;
+        for(int i=0;i<m.getTamano();i++){
+            for(int j=0;j<m.getTamano();j++){
+                if("t3".equals(m.getCelda()[i][j].getTipo()) && m.getCelda()[i][j].getAbajo() !=-1){
+                    conta++; 
+                }
+            }
+        }
+        return conta;
+    }
+    
+    public static int cantidaColumL(Matriz m){
+        int conta = 0;
+        for(int i=0;i<m.getTamano();i++){
+            for(int j=0;j<m.getTamano();j++){
+                if("t3".equals(m.getCelda()[i][j].getTipo()) && m.getCelda()[i][j].getAbajo() !=-1){
+                    if(m.getCelda()[i][j].isColumna()==true){
+                       conta++; 
+                    }
+                }
+            }
+        }
+        return conta;
+    }
+    
+    public static int[] siguienteFila(Matriz m){
+         int[] resultado = new int[2];
+        for(int i=0;i<m.getTamano();i++){
+            for(int j=0;j<m.getTamano();j++){
+                Celdaa celd = m.getCelda()[i][j];
+                if("t3".equals(celd.getTipo()) && celd.getDerecha()!=-1 && celd.isFila() == false){
+                    resultado[0] = i;
+                    resultado[1] = j;
+                    return resultado;
+                }
+            }
+        }
+        
+        return resultado;
+    }
+   
+//    public static int[] siguienteFila(Matriz m){
+//        int []result = new int[3];
+//        for(int i=0;i<m.getTamano();i++){
+//            int contador = 0;
+//            int fila = i;
+//            for(int j=0;j<m.getTamano();j++){
+//                if("t2".equals(m.getCelda()[i][j].getTipo())){
+//                    contador++;
+//                }else{
+//                    if(contador!=0 && contador!=1){
+//                        if((result[0]>contador  || result[0]==0) && tieneDerecha(m,fila,j-contador)==false){                          
+//                            result[0]=contador;
+//                            result[1]=fila;
+//                            result[2]=j-contador-1;
+//                            contador= 0;
+//                        }else{
+//                            contador =0;
+//                        }
+//                    }
+//                }
+//            }
+//        }       
+//        //imprimir(result);
+//        return result;
+//    }
+    
+    public static int[] siguienteColumna(Matriz m){
+        int []result = new int[2];
+        for(int i=0;i<m.getTamano();i++){
+            for(int j=0;j<m.getTamano();j++){
+              Celdaa celd = m.getCelda()[i][j];
+                if("t3".equals(celd.getTipo()) && celd.getAbajo()!=-1 && celd.isColumna() == false){
+                    result[0] = i;
+                    result[1] = j;
+                    return result;
+                }
+            }
+        }       
+        //imprimir(result);
+        return result;
+    }
+    
+    public static Matriz resolverI(Matriz m,ArrayList soluciones){
+        int[] coordenadas = siguienteFila(m);
+        int fila = coordenadas[0];
+        int columna = coordenadas[1];
+        int numero = m.getCelda()[fila][columna].getDerecha();
+        int espacios = casillasFila(m, fila, columna);
+        //System.out.println("Fila: "+fila+" columna: "+columna+" Espacios: "+espacios+" fomar el numero: "+numero+" estado: "+m.getCelda()[fila][columna].isFila());
+        int result[] = new int[espacios];
+        ArrayList<int[]> resultado = new ArrayList<>();
+        backNum(result,numero,resultado,0);
+        Celdaa[][] celd = new Celdaa[m.getTamano()][m.getTamano()];
+        celd = clonarM(m); Matriz m1 = new Matriz(); m1.setMatriz(celd);
+        m.getCelda()[fila][columna].setFila(true);
+        for(int i=0;i<resultado.size();i++){
+            int [] permutacion = resultado.get(i);
+            if(vectorFila(m1,permutacion,fila+1,columna)!=true && columnaCorrecto(m,permutacion,fila,columna)!=true){
+                for(int j=0;j<espacios;j++){
+                    m.getCelda()[fila][columna+j+1].setValor(permutacion[j]);
+                    m.getCelda()[fila][columna+j+1].setTipo("t4");
+                }
+                Matriz m2 = new Matriz(); Celdaa[][] c1 = clonarM(m); m2.setMatriz(c1);
+                reso(m2,soluciones); 
+            }
+        }
+        return null;
+    }
+    
+    public static Matriz resolverC(Matriz m,ArrayList soluciones){
+        int[] coordenadas =  siguienteColumna(m);
+        int fila = coordenadas[0];
+        int columna = coordenadas[1];
+        int numero = m.getCelda()[fila][columna].getAbajo();
+        int espacios = casillasColumna(m,fila,columna);
+        //System.out.println("Fila: "+fila+" columna: "+columna+" Espacios: "+espacios+" fomar el numero: "+numero+" estado: "+m.getCelda()[fila][columna].isFila());
+        int result[] = new int[espacios];
+        ArrayList<int[]> resultado = new ArrayList<>();
+        backNum(result,numero,resultado,0);
+        Celdaa[][] celd = new Celdaa[m.getTamano()][m.getTamano()];
+        celd = clonarM(m); Matriz m1 = new Matriz(); m1.setMatriz(celd);
+        m.getCelda()[fila][columna].setColumna(true);
+        for(int i=0;i<resultado.size();i++){
+            int[] permutacion = resultado.get(i);
+            if(vectorColumna(m1,permutacion,fila+1,columna)!=true){
+                for(int j=0;j<permutacion.length;j++){
+                    m.getCelda()[fila+j+1][columna].setValor(permutacion[j]);
+                    m.getCelda()[fila+j+1][columna].setTipo("t4");
+                }
+                Matriz m2 = new Matriz(); Celdaa[][] c1 = clonarM(m); m2.setMatriz(c1);
+                reso(m2,soluciones); 
+            }
+        }
+        return null;
+    }
+    
+    public static Matriz reso(Matriz m,ArrayList soluciones){
+        int colocada = cantidadLista(m);
+        //System.out.println(colocada);
+        if(colocada >= m.getDimensiones()){
+            if(solucion(m)==false&&solucionColumnas(m)==true){
+                System.out.println("solucion:");
+                soluciones.add(m);
+            }else{
+                System.out.println("-.-");
+            }  
+        }else{
+            int totalFila = cantidaColum(m);
+            int momento = cantidaColumL(m);
+            //System.out.println(momento);
+            if(momento<totalFila){
+                return resolverC(m,soluciones);
+            }else{
+                System.out.println("Al parecer la filas estan listas");
+                return resolverI(m, soluciones);
+            }
+        }
+        return null;
+    }
+    
     
 }

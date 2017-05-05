@@ -5,7 +5,9 @@ import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JPanel;
+import static kakuro.kakuroSolucionador.reso;
 import static kakuro.kakuroSolucionador.resolver;
+import static kakuro.kakuroSolucionador.resolverI;
 import static kakuro.kakuroSolucionador.resolverKakuro;
 import static kakuro.kakuroSolucionador.respuestaRepetida;
 
@@ -13,7 +15,7 @@ import static kakuro.kakuroSolucionador.respuestaRepetida;
 public class GUIMatriz extends javax.swing.JFrame {
     private Administrador admin;
     private List<Celda> listaCeldas;
-    private static int tamaño = 5;
+    private static int tamaño = 14;
     
  
     public GUIMatriz() {
@@ -36,6 +38,8 @@ public class GUIMatriz extends javax.swing.JFrame {
         jpanelDesign = new javax.swing.JPanel();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
+        jLabelR = new javax.swing.JLabel();
+        jButton4 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -75,16 +79,30 @@ public class GUIMatriz extends javax.swing.JFrame {
             }
         });
 
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(146, 146, 146)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(45, 45, 45)
+                        .addComponent(jLabelR, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(60, 60, 60)
+                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(120, 120, 120)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -107,7 +125,11 @@ public class GUIMatriz extends javax.swing.JFrame {
                         .addGap(31, 31, 31)
                         .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(34, 34, 34)
+                        .addComponent(jLabelR, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(41, 41, 41)
+                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(41, Short.MAX_VALUE))
         );
 
@@ -198,11 +220,109 @@ public class GUIMatriz extends javax.swing.JFrame {
 
         }
     }
+       
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
        //admin.getMatriz().imprimirMatriz();
+       System.out.println("Inicio a resolver");
+       System.out.println("--------------------------------");
+       //admin.getMatriz().imprimirMatriz();
+       Matriz m = new Matriz();
+            m.crearMatriz1(10);
+            m.getCelda()[0][0].setTipo("t3");
+            m.getCelda()[0][1].setTipo("t3");
+            m.getCelda()[0][1].setAbajo(3);
+            m.getCelda()[0][2].setTipo("t3");
+            m.getCelda()[0][2].setAbajo(6);
+            m.getCelda()[0][5].setTipo("t3");
+            m.getCelda()[0][5].setAbajo(8);
+            m.getCelda()[0][6].setTipo("t3");
+            m.getCelda()[0][6].setAbajo(4);
+            m.getCelda()[0][7].setTipo("t3");
+            m.getCelda()[0][7].setAbajo(10);
+            m.getCelda()[1][0].setTipo("t3");
+            m.getCelda()[1][0].setDerecha(3); 
+            m.getCelda()[1][3].setTipo("t1");
+            m.getCelda()[1][4].setTipo("t3");
+            m.getCelda()[1][4].setDerecha(6); 
+            m.getCelda()[1][4].setAbajo(6);
+            m.getCelda()[1][8].setTipo("t3");
+            m.getCelda()[2][0].setTipo("t3");
+            m.getCelda()[2][0].setDerecha(4);
+            m.getCelda()[2][3].setTipo("t3");
+            m.getCelda()[2][3].setDerecha(10);
+            m.getCelda()[2][3].setAbajo(7);
+            m.getCelda()[2][8].setTipo("t3");
+            m.getCelda()[2][8].setAbajo(4); 
+            m.getCelda()[3][1].setTipo("t3");
+            m.getCelda()[3][1].setDerecha(11);
+            m.getCelda()[3][6].setTipo("t3");
+            m.getCelda()[3][6].setDerecha(4);
+            m.getCelda()[3][6].setAbajo(7);            
+            m.getCelda()[4][1].setTipo("t3");
+            m.getCelda()[4][1].setAbajo(4);
+            m.getCelda()[4][2].setTipo("t3");
+            m.getCelda()[4][2].setDerecha(3);
+            m.getCelda()[4][2].setAbajo(11);
+            m.getCelda()[4][5].setTipo("t3");
+            m.getCelda()[4][5].setDerecha(7);
+            m.getCelda()[4][5].setAbajo(8);
+            m.getCelda()[5][0].setTipo("t3");
+            m.getCelda()[5][0].setDerecha(7);
+            m.getCelda()[5][4].setTipo("t3");
+            m.getCelda()[5][4].setDerecha(4);
+            m.getCelda()[5][4].setAbajo(6);
+            m.getCelda()[5][7].setTipo("t3");
+            m.getCelda()[5][7].setAbajo(22);
+            m.getCelda()[5][8].setTipo("t1");
+            m.getCelda()[6][0].setTipo("t3");
+            m.getCelda()[6][0].setDerecha(4);
+            m.getCelda()[6][3].setTipo("t3");
+            m.getCelda()[6][3].setDerecha(11);
+            m.getCelda()[6][3].setAbajo(4);
+            m.getCelda()[6][8].setTipo("t3");
+            m.getCelda()[6][8].setAbajo(16);
+            m.getCelda()[7][1].setTipo("t3");
+            m.getCelda()[7][1].setDerecha(13);
+            m.getCelda()[7][6].setTipo("t3");
+            m.getCelda()[7][6].setDerecha(17);
+            m.getCelda()[8][1].setTipo("t3");
+            m.getCelda()[8][1].setDerecha(6);
+            m.getCelda()[8][5].setTipo("t1");
+            m.getCelda()[8][6].setTipo("t3");
+            m.getCelda()[8][6].setDerecha(16);
+            //m.imprimirMatriz();
+       ArrayList<Matriz> sol = new ArrayList<Matriz>();
+       //resolverKakuro(admin.getMatriz(),sol);
+       reso(admin.getMatriz(),sol);
+       System.out.println(sol.size());
+       System.out.println("termino con la solucion");
+       if(sol.size()>0){
+           jLabelR.setText("Encontro una repuesta");
+           admin.setMatriz(sol.get(0));
+       }else{
+           jLabelR.setText("No encontro respuesta");
+       }
+    }//GEN-LAST:event_jButton2ActionPerformed
 
-            Matriz m = new Matriz();
+    
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+        System.out.println("Pintar matriz");
+        jpanelDesign.removeAll();
+        jpanelDesign.revalidate();
+        jpanelDesign.repaint();    
+        admin.limpiarLista();
+        admin.generarListaCeldas(tamaño);
+        admin.getMatriz().imprimirMatriz();
+        admin.converSoluTOcreada();
+        System.out.println(admin.getListaCeldas().get(2).getTipocelda());
+        pintarMatriz();
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // TODO add your handling code here:
+        Matriz m = new Matriz();
             m.crearMatriz1(10);
             m.getCelda()[0][0].setTipo("t3");
             m.getCelda()[0][1].setTipo("t3");
@@ -267,27 +387,10 @@ public class GUIMatriz extends javax.swing.JFrame {
             m.getCelda()[8][6].setTipo("t3");
             m.getCelda()[8][6].setDerecha(16);
             m.imprimirMatriz();
-       System.out.println("Inicio a resolver");
-       System.out.println("--------------------------------");
-       //resolverKakuro(admin.getMatriz(),admin.getSoluciones());
-       admin.getMatriz().imprimirMatriz();
-       resolver(admin.getMatriz(),admin.getSoluciones());
-       System.out.println("termino con la solucion");
-       if(admin.getSoluciones().size()>0){
-           admin.setMatriz(admin.getSoluciones().get(0));
-       }
-    }//GEN-LAST:event_jButton2ActionPerformed
-
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
-        jpanelDesign.removeAll();
-        jpanelDesign.revalidate();
-        jpanelDesign.repaint();    
-        admin.limpiarLista();
-        admin.generarListaCeldas(tamaño);
-        admin.converSoluTOcreada();
-        pintarMatriz();
-    }//GEN-LAST:event_jButton3ActionPerformed
+        ArrayList<Matriz> sol = new ArrayList<Matriz>();
+        resolverKakuro(m,sol);
+        System.out.println("aqr");
+    }//GEN-LAST:event_jButton4ActionPerformed
 
     public void refrescarMatriz(){
         jpanelDesign.revalidate();
@@ -332,6 +435,9 @@ public class GUIMatriz extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
+    public javax.swing.JLabel jLabelR;
     private javax.swing.JPanel jpanelDesign;
     // End of variables declaration//GEN-END:variables
+
 }
